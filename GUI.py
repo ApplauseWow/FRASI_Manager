@@ -55,10 +55,5 @@ class Sys_Option_UI(QDialog, Ui_sys_option):
         self.setupUi(self)
 
 
-# following functions in utilities class are scalable and pluggable
 
-class Utility(object):
-    """
-    utilities
-    """
 
