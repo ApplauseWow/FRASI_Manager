@@ -8,6 +8,8 @@ import numpy as np
 from cv2.cv2 import *
 import threading
 import time
+import dlib
+
 
 # following functions in utilities class are scalable and pluggable
 # process runs in backend
@@ -65,6 +67,18 @@ class Utility(object):
             print("none of the devices is available")
 
 
+    @staticmethod
+    def camera_timer(camera, seconds):
+        """
+        close the camera after some interim
+        :param camera: the object of camera
+        :param seconds: interim
+        :return: none
+        """
+
+        time.sleep(seconds)
+        # if there is a detected face pass
+        # or not so, release the object of camera
 
 
     @staticmethod
