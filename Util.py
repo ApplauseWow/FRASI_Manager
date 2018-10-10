@@ -3,10 +3,11 @@ from sklearn import svm
 from face_recognition import face_locations, face_encodings
 from PyQt5.QtGui import QPixmap, QImage
 import socket
-import xml.etree.ElementTree
-import numpy
+import xml.etree.ElementTree as EL
+import numpy as np
 from cv2.cv2 import *
 import threading
+import time
 
 # following functions in utilities class are scalable and pluggable
 # process runs in backend
@@ -62,3 +63,26 @@ class Utility(object):
             # none of the devices is available
             msg = "none of the devices is available"
             print("none of the devices is available")
+
+
+
+
+    @staticmethod
+    def read_param_from_xml():
+        """
+        parse the XML file for getting the parameters of system
+        :return: params_dict that a dictionary containing the parameters of system
+        """
+
+        path = "./sys.xml"
+        tree = EL.parse(path)
+        root = tree.getroot()
+        params_dict = dict()
+
+        for param in root.iter("param"):
+            name = param.attrib['name']
+            count = param.attrib['count']
+            params_dict[name] = count
+
+        return params_dict
+
