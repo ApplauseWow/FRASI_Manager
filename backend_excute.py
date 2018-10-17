@@ -8,16 +8,16 @@ class Backend(SocketServer.BaseRequestHandler):
     def handle(self):
 
         conn = self.request
-        conn.sendall(bytes("backend is working..."))
+        conn.sendall(bytes("got"))
         while True:
             ret_bytes = conn.recv(1024) # receive the bytes stream
             ret_str = str(ret_bytes) # transport the type
 
             #  match the task
             if ret_str == "recognition":
-                print "recognition..."
+                print "got it, recognition..."
             elif ret_str == "sign_in":
-                print "sign in..."
+                print "got it, sign in..."
             elif ret_str == "exit":
                 break
             conn.sendall(bytes("task done...")) # reply

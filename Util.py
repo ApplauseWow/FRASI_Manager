@@ -83,7 +83,6 @@ class Utility(object):
             msg = "none of the devices is available"
             print("none of the devices is available")
 
-
     @staticmethod
     def camera_timer(camera, seconds):
         """
@@ -109,6 +108,28 @@ class Utility(object):
             # no face was detected
             print "camera was closed..."
             camera.release()
+
+    @staticmethod
+    def socket_transmission(task):
+        """
+        connected with backend via socket and transmit the information of task
+        :param task: a string containing the name of task
+        :return: none
+        """
+
+        obj = socket.socket()
+        obj.connect(("127.0.0.1", 8080))
+
+        ret_bytes = obj.recv(1024)
+        ret_str = str(ret_bytes)
+        if ret_str == "got":
+            print "backend is working, keep accepting task..."
+            obj.sendall(bytes(task))
+            ret_bytes = obj.recv(1024)
+            ret_str = str(ret_bytes)
+            print "return the result..." + ret_str
+        else:
+            print "there is something wrong with backend...\nfail to connect"
 
 
     @staticmethod
