@@ -5,5 +5,5 @@
     <!--number of capturing frames to register each time -->
     <param name = "register_frame" count = "6" />
     <!--close the camera after the interim-->
-    <param name = "auto_sleep_interim" count = "30" />
+    <param name = "auto_sleep_interim" count = "5" />
 </parameters>

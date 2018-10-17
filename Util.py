@@ -50,14 +50,14 @@ class Utility(object):
                 # device is available
                 print("device connect successfully!")
                 # start timer
-                threading.Thread(target=Utility.camera_timer(device, float(AUTO_SLEEP_INTERIM))).start()
+                threading.Thread(target=Utility.camera_timer, args=(device, float(AUTO_SLEEP_INTERIM))).start()
                 while True:
                     # capture frame
                     success, frame = device.read()
                     if not success:  # not captured  successfully
                         msg = "no frame was captured!"
-                        print("no frame was captured!\nbreak...")
-                        break
+                        print("no frame was captured!\nstop working...")
+                        return
                     elif success:  # captured successfully
                         # data of frame
                         row = frame.shape[0]
