@@ -11,6 +11,21 @@ import time
 import dlib
 
 
+path = "./sys.xml"
+tree = EL.parse(path)
+root = tree.getroot()
+param_dict = dict()
+
+for param in root.iter("param"):
+    name = param.attrib['name']
+    count = param.attrib['count']
+    param_dict[name] = count
+
+# parameters of system
+RECOGNITION_FRAME = param_dict["recognition_frame"]
+REGISTER_FRAME = param_dict["register_frame"]
+AUTO_SLEEP_INTERIM = param_dict["auto_sleep_interim"]
+
 # following functions in utilities class are scalable and pluggable
 # process runs in backend
 
@@ -19,6 +34,7 @@ class Utility(object):
     utilities
     """
 
+
     @staticmethod
     def open_camera(gui_frame):
         """
@@ -26,12 +42,15 @@ class Utility(object):
         :param gui_frame: the object of GUI label
         :return: none
         """
+
         # search the available device
         for i in range(4):
             device = VideoCapture(i)
             if device.isOpened():
                 # device is available
                 print("device connect successfully!")
+                # start timer
+                threading.Thread(target=Utility.camera_timer(device, float(AUTO_SLEEP_INTERIM))).start()
                 while True:
                     # capture frame
                     success, frame = device.read()
@@ -40,8 +59,6 @@ class Utility(object):
                         print("no frame was captured!\nbreak...")
                         break
                     elif success:  # captured successfully
-                        print("capture successfully!")
-
                         # data of frame
                         row = frame.shape[0]
                         col = frame.shape[1]
@@ -50,7 +67,7 @@ class Utility(object):
                         # image processing
                         frame_flipped = flip(frame, 1)  # 0-vertical 1-horizontal -1-ver&hor
                         # thread of recognition
-                        # cv2.cvtColor(frame_flipped, cv2.COLOR_BGR2RGB, frame_flipped)
+                        cvtColor(frame_flipped, COLOR_BGR2RGB, frame_flipped)
 
                         gui_frame.setPixmap(QPixmap.fromImage(QImage(frame_flipped.data,
                                                                      col, row, bytesPerLine,
@@ -76,9 +93,22 @@ class Utility(object):
         :return: none
         """
 
+        print "start counting seconds..."
         time.sleep(seconds)
         # if there is a detected face pass
         # or not so, release the object of camera
+        detector = dlib.get_frontal_face_detector()
+        for i in range(3):
+            ret, frame = camera.read()
+            dets = detector(frame, 1)
+            if len(dets) > 0:
+                print "there is face detected, continue working..."
+                threading.Thread(target=Utility.camera_timer, args=(camera, seconds)).start()
+                break
+        else:
+            # no face was detected
+            print "camera was closed..."
+            camera.release()
 
 
     @staticmethod
