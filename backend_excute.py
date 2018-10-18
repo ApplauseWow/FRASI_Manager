@@ -18,9 +18,17 @@ class Backend(SocketServer.BaseRequestHandler):
                 print "got it, recognition..."
             elif ret_str == "sign_in":
                 print "got it, sign in..."
+            elif ret_str == "timer":
+                print "got it, timing..."
+                threading.Thread(target=Utility.camera_timer, args=(float(AUTO_SLEEP_INTERIM),conn )).start()
             elif ret_str == "detect":
                 print "got it, detect..."
-                threading.Thread(target=Utility.camera_timer, args=(float(AUTO_SLEEP_INTERIM), )).start()
+                img_path = "./Cache/detect"
+                ret = Utility.detect_face(img_path)
+                if ret: # exist face
+                    conn.sendall("exist")
+                else: # none
+                    conn.sendall("no_face")
             elif ret_str == "exit":
                 break
 

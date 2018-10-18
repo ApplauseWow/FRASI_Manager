@@ -44,6 +44,7 @@ class Utility(object):
     @staticmethod
     def open_camera(gui_frame):
         """
+        - front end
         open the camera and capture each frame to show on the GUI label
         :param gui_frame: the object of GUI label
         :return: none
@@ -59,7 +60,7 @@ class Utility(object):
                 SWITCH = True
                 # start timer
                 # threading.Thread(target=Utility.camera_timer, args=(device, float(AUTO_SLEEP_INTERIM))).start()
-                threading.Thread(target=Utility.socket_transmission, args=("detect", )).start()
+                threading.Thread(target=Utility.socket_transmission, args=("timer", )).start()
 
                 NUM_RECOGNITION_CACHE = 0  # the number of saved frames for recognition
                 NUM_DETECT_CACHE = 0  # the number of saved frames for detect
@@ -102,8 +103,8 @@ class Utility(object):
                                 # have finished saving cache and init the var
                                 DET_CACHE_SIGNAL = False
                                 NUM_DETECT_CACHE = 0
-                                # send msg -- saved cache and start detect
-                                # threading.Thread()
+                                # send msg -- have saved cache and start detect
+                                threading.Thread(Utility.socket_transmission, args=("detect", )).start()
                         if REC_CACHE_SIGNAL :
                             print "save the cache of the frame for recognition..."
                             img_path = ("./Cache/recognition/rec_cache_".join(NUM_RECOGNITION_CACHE)).join(".jpg")
@@ -137,10 +138,12 @@ class Utility(object):
             print("none of the devices is available")
 
     @staticmethod
-    def camera_timer(seconds):
+    def camera_timer(seconds, conn):
         """
+        - backend
         close the camera after some interim
         :param seconds: interim
+        :param conn: backend socket for sending message
         :return: none
         """
 
@@ -149,29 +152,12 @@ class Utility(object):
         # if there is a detected face pass
         # or not so, release the object of camera
         # send msg -- start storing the cache
-        detector = dlib.get_frontal_face_detector()
-        threading.Thread(target=Utility.save_cache_of_frame, args=("detect", )).start()
-        global NUM_DETECT_CACHE
-        while not NUM_DETECT_CACHE == 0:
-            print "saving the detect cache...wait..."
-        global DETECT_FRAME
-        for i in range(int(DETECT_FRAME)):
-            img_path = ("./Cache/detect/det_cache_".join(i)).join(".jpg")
-            frame = imread(img_path)
-            dets = detector(frame, 1)
-            if len(dets) > 0:
-                print "there is face detected, continue working..."
-                threading.Thread(target=Utility.camera_timer, args=(seconds, )).start()
-                break
-        else:
-            # no face was detected
-            print "camera was closed..."
-            global SWITCH
-            SWITCH = False
+        conn.sendall(bytes("save_det_cache"))
 
     @staticmethod
     def save_cache_of_frame(kind):
         """
+        - front end
         save the all kinds of frames in Cache directory for specific use
         :param kind: according to the task name, save the frames
         :return: none
@@ -190,11 +176,19 @@ class Utility(object):
             global REG_CACHE_SIGNAL
             REG_CACHE_SIGNAL = True
 
+    @staticmethod
+    def detect_face(img_path):
+        """
+        detect the cache of frames if there is face
+        :param img_path: detect the image in the directory of the path
+        :return: boolean => true : exist false : none
+        """
 
 
     @staticmethod
     def socket_transmission(task):
         """
+        - front end
         connected with backend via socket and transmit the information of task
         :param task: a string containing the name of task
         :return: none
@@ -210,9 +204,20 @@ class Utility(object):
             obj.sendall(bytes(task))
             ret_bytes = obj.recv(1024)
             ret_str = str(ret_bytes)
-            print "return the result:" + ret_str
+            # feedback
+            if ret_str == "save_det_cache":
+                # start saving the cache for detect
+                Utility.save_cache_of_frame("detect")
+            elif ret_str == "exist":
+                # cant't close the camera
+                pass
+            elif ret_str == "no_face":
+                # close the camera
+                global SWITCH
+                SWITCH = False
         else:
             print "there is something wrong with backend...\nfail to connect"
+        obj.close()
 
 
     @staticmethod

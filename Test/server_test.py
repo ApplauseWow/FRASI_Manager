@@ -4,8 +4,8 @@ class Myserver(SocketServer.BaseRequestHandler):
 
 	def handle(self):
 
-		conn = self.request
-		conn.sendall(bytes("I am robot"))
+		conn = self.request # return [0]data [1] address
+		conn.sendall("I am robot")
 		while True:
 			ret_bytes = conn.recv(1024)
 			ret_str = str(ret_bytes)
@@ -13,6 +13,14 @@ class Myserver(SocketServer.BaseRequestHandler):
 				print "recognition..."
 			if ret_str == "sign_in":
 				print "sign in..."
+			if ret_str == "test_obj":
+				conn.sendall(bytes("got"))
+				obj = conn.recv(1024)
+				import pickle
+				dic = pickle.loads(obj)
+				print dic["person"].name
+				dic["person"].name = "kwok"
+				conn.sendall(bytes("change"))
 			if ret_str == "q":
 				break
 			conn.sendall(bytes("task done..."))
