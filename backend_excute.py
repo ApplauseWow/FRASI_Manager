@@ -1,7 +1,7 @@
 # -*-coding:utf-8-*-
 
 import SocketServer
-from Util import Utility
+from Util import *
 
 class Backend(SocketServer.BaseRequestHandler):
 
@@ -18,11 +18,14 @@ class Backend(SocketServer.BaseRequestHandler):
                 print "got it, recognition..."
             elif ret_str == "sign_in":
                 print "got it, sign in..."
+            elif ret_str == "detect":
+                print "got it, detect..."
+                threading.Thread(target=Utility.camera_timer, args=(float(AUTO_SLEEP_INTERIM), )).start()
             elif ret_str == "exit":
                 break
-            conn.sendall(bytes("task done...")) # reply
+
 
 
 if __name__ == "__main__":
-    server = SocketServer.ThreadingTCPServer(("127.0.0.1", 8080), Backend)
+    server = SocketServer.ThreadingTCPServer(("127.0.0.1", 44967), Backend)
     server.serve_forever()
