@@ -37,25 +37,36 @@
 #         ret_str = str(ret_bytes)
 #         print ret_str
 
-import threading
-import time
+# import threading
+# import time
+#
+# class Test(object):
+#
+#     @staticmethod
+#     def test():
+#         threading.Thread(target=Test.thread_test).start()
+#         for i in range(20):
+#             time.sleep(0.5)
+#             print i
+#
+#     @staticmethod
+#     def thread_test():
+#         print("sleep...")
+#         time.sleep(5)
+#         print("wake up")
+#
+#
+# if __name__ == '__main__':
+#     print("main thread ...")
+#     threading.Thread(target=Test.test).start()
 
-class Test(object):
+import os
 
-    @staticmethod
-    def test():
-        threading.Thread(target=Test.thread_test).start()
-        for i in range(20):
-            time.sleep(0.5)
-            print i
-
-    @staticmethod
-    def thread_test():
-        print("sleep...")
-        time.sleep(5)
-        print("wake up")
-
-
-if __name__ == '__main__':
-    print("main thread ...")
-    threading.Thread(target=Test.test).start()
+p = os.path.abspath(".")
+print p
+p=os.getcwd()
+print p
+for root, dirs, files in os.walk(p):
+    print root
+    print dirs
+    print files

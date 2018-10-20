@@ -9,6 +9,7 @@ from cv2.cv2 import *
 import threading
 import time
 import dlib
+import os
 
 
 path = "./sys.xml"
@@ -88,37 +89,37 @@ class Utility(object):
                         cvtColor(frame_flipped, COLOR_BGR2RGB, frame_flipped)
 
                         # store cache of frames
-                        global NUM_DETECT_CACHE
-                        global NUM_RECOGNITION_CACHE
-                        global NUM_SIGN_IN_CACHE
                         global DET_CACHE_SIGNAL
                         global REC_CACHE_SIGNAL
                         global REG_CACHE_SIGNAL
                         if DET_CACHE_SIGNAL:
                             print "save the cache of the frame for detect..."
-                            img_path = ("./Cache/detect/det_cache_".join(NUM_DETECT_CACHE)).join(".jpg")
+                            img_path = os.path.join("./Cache/detect", "det_cache_" + str(NUM_DETECT_CACHE) + ".jpg")
+                            # img_path = ("./Cache/detect/det_cache_".join(NUM_DETECT_CACHE)).join(".jpg")
                             imwrite(img_path, frame)
                             NUM_DETECT_CACHE += 1
-                            if NUM_DETECT_CACHE > int(DETECT_FRAME):
+                            if NUM_DETECT_CACHE == int(DETECT_FRAME):
                                 # have finished saving cache and init the var
                                 DET_CACHE_SIGNAL = False
                                 NUM_DETECT_CACHE = 0
                                 # send msg -- have saved cache and start detect
-                                threading.Thread(Utility.socket_transmission, args=("detect", )).start()
+                                threading.Thread(target=Utility.socket_transmission, args=("detect", )).start()
                         if REC_CACHE_SIGNAL :
                             print "save the cache of the frame for recognition..."
-                            img_path = ("./Cache/recognition/rec_cache_".join(NUM_RECOGNITION_CACHE)).join(".jpg")
+                            img_path = os.path.join("./Cache/recognition", "rec_cache_" + str(NUM_RECOGNITION_CACHE) + ".jpg")
+                            # img_path = ("./Cache/recognition/rec_cache_".join(NUM_RECOGNITION_CACHE)).join(".jpg")
                             imwrite(img_path, frame)
                             NUM_RECOGNITION_CACHE += 1
-                            if NUM_RECOGNITION_CACHE > int(RECOGNITION_FRAME):
+                            if NUM_RECOGNITION_CACHE == int(RECOGNITION_FRAME):
                                 REC_CACHE_SIGNAL = False
                                 NUM_RECOGNITION_CACHE = 0
                         if REG_CACHE_SIGNAL :
                             print "save the cache of the frame for signing in..."
-                            img_path = ("./Cache/sign_in/sign_cache_".join(NUM_SIGN_IN_CACHE)).join(".jpg")
+                            img_path = os.path.join("./Cache/sign_in", "sign_cache_" + str(NUM_SIGN_IN_CACHE) + ".jpg")
+                            # img_path = ("./Cache/sign_in/sign_cache_".join(NUM_SIGN_IN_CACHE)).join(".jpg")
                             imwrite(img_path, frame)
                             NUM_SIGN_IN_CACHE += 1
-                            if NUM_SIGN_IN_CACHE > int(REGISTER_FRAME):
+                            if NUM_SIGN_IN_CACHE == int(REGISTER_FRAME):
                                 REG_CACHE_SIGNAL = False
                                 NUM_SIGN_IN_CACHE = 0
 
@@ -177,19 +178,40 @@ class Utility(object):
             REG_CACHE_SIGNAL = True
 
     @staticmethod
-    def detect_face(img_path):
+    def detect_face(img_path, conn):
         """
+        - backend
         detect the cache of frames if there is face
         :param img_path: detect the image in the directory of the path
+        :param conn: the object of socket
         :return: boolean => true : exist false : none
         """
 
+        detector = dlib.get_frontal_face_detector()
+        for file in os.listdir(img_path):
+            if file == "":
+                # dir is empty
+                conn.sendall(bytes("no_file"))
+            else:
+                file_path = os.path.join(img_path, file)
+                img = imread(file_path)
+                dets = detector(img, 1)
+                if len(dets) > 0:
+                    # there is detected face
+                    print "exist face!"
+                    conn.sendall(bytes("exist"))
+                elif len(dets) == 0:
+                    print "no face here!"
+        else:
+            # no face in each frame
+            return conn.sendall(bytes("no_face"))
 
     @staticmethod
     def socket_transmission(task):
         """
         - front end
         connected with backend via socket and transmit the information of task
+        this function can be normalized for specific task like JAVA servlet
         :param task: a string containing the name of task
         :return: none
         """
@@ -208,9 +230,12 @@ class Utility(object):
             if ret_str == "save_det_cache":
                 # start saving the cache for detect
                 Utility.save_cache_of_frame("detect")
+            elif ret_str == "no_file":
+                # no cache exist
+                print "no cache file"
             elif ret_str == "exist":
-                # cant't close the camera
-                pass
+                # cant't close the camera and start timing again
+                threading.Thread(target=Utility.socket_transmission, args=("timer", )).start()
             elif ret_str == "no_face":
                 # close the camera
                 global SWITCH
