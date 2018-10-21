@@ -200,11 +200,12 @@ class Utility(object):
                     # there is detected face
                     print "exist face!"
                     conn.sendall(bytes("exist"))
+                    break
                 elif len(dets) == 0:
                     print "no face here!"
         else:
             # no face in each frame
-            return conn.sendall(bytes("no_face"))
+            conn.sendall(bytes("no_face"))
 
     @staticmethod
     def socket_transmission(task):
