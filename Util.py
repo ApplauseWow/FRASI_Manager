@@ -41,7 +41,6 @@ class Utility(object):
     utilities
     """
 
-
     @staticmethod
     def open_camera(gui_frame):
         """
@@ -188,12 +187,12 @@ class Utility(object):
         """
 
         detector = dlib.get_frontal_face_detector()
-        for file in os.listdir(img_path):
+        for _file in os.listdir(img_path):
             if file == "":
                 # dir is empty
                 conn.sendall(bytes("no_file"))
             else:
-                file_path = os.path.join(img_path, file)
+                file_path = os.path.join(img_path, _file)
                 img = imread(file_path)
                 dets = detector(img, 1)
                 if len(dets) > 0:
@@ -231,20 +230,22 @@ class Utility(object):
             if ret_str == "save_det_cache":
                 # start saving the cache for detect
                 Utility.save_cache_of_frame("detect")
+                obj.close()
             elif ret_str == "no_file":
                 # no cache exist
                 print "no cache file"
+                obj.close()
             elif ret_str == "exist":
                 # cant't close the camera and start timing again
                 threading.Thread(target=Utility.socket_transmission, args=("timer", )).start()
+                obj.close()
             elif ret_str == "no_face":
                 # close the camera
                 global SWITCH
                 SWITCH = False
+                obj.close()
         else:
             print "there is something wrong with backend...\nfail to connect"
-        obj.close()
-
 
     @staticmethod
     def read_param_from_xml():

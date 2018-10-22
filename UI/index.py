@@ -275,7 +275,7 @@ class Ui_Index_UI(object):
     def retranslateUi(self, Index_UI):
         _translate = QtCore.QCoreApplication.translate
         Index_UI.setWindowTitle(_translate("Index_UI", "FRASI Manager"))
-        self.menu.headerItem().setText(0, _translate("Index_UI", "1"))
+        self.menu.headerItem().setText(0, _translate("Index_UI", "menu"))
         __sortingEnabled = self.menu.isSortingEnabled()
         self.menu.setSortingEnabled(False)
         self.menu.topLevelItem(0).setText(0, _translate("Index_UI", "Face Recognition"))

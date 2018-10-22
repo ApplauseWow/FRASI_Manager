@@ -60,13 +60,14 @@
 #     print("main thread ...")
 #     threading.Thread(target=Test.test).start()
 
-import os
+# import os
+#
+# p = os.path.abspath(".")
+# print p
+# p=os.getcwd()
+# print p
+# for root, dirs, files in os.walk(p):
+#     print root
+#     print dirs
+#     print files
 
-p = os.path.abspath(".")
-print p
-p=os.getcwd()
-print p
-for root, dirs, files in os.walk(p):
-    print root
-    print dirs
-    print files
