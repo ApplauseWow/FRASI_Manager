@@ -36,6 +36,7 @@ REG_CACHE_SIGNAL = False # permission for saving register cache
 # following functions in utilities class are scalable and pluggable
 # process runs in backend
 
+
 class Utility(object):
     """
     utilities

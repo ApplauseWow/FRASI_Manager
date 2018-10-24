@@ -24,7 +24,6 @@ class Index(QMainWindow, Ui_Index_UI):
         # self.id_window = QDialog()
         # self.id_ui.setupUi(self.id_window)
         # self.id_window.show()
-        self.menu.doubleClicked.connect(self.mouseDoubleClickEvent)
 
 
 class Identify_Id_UI(QDialog, Ui_Identity_ID_UI):
