@@ -10,6 +10,7 @@ import threading
 import time
 import dlib
 import os
+import pymysql
 
 
 path = "./sys.xml"
@@ -71,6 +72,7 @@ class Utility(object):
                     if not SWITCH:
                         # close the camera
                         device.release()
+                        return
                     # capture frame
                     success, frame = device.read()
                     if not success:  # not captured  successfully
@@ -247,6 +249,19 @@ class Utility(object):
                 obj.close()
         else:
             print "there is something wrong with backend...\nfail to connect"
+
+    @staticmethod
+    def sql_operation(op):
+        """
+        SQL operation
+        :param op: a tuple : op[0] => operation op[1] => sql
+        :return: none
+        """
+
+        db = pymysql.connect("localhost", "root", "123qwe", "frasi")
+        with db:
+            # sql operation
+            pass
 
     @staticmethod
     def read_param_from_xml():

@@ -14,13 +14,17 @@ class Interaction(Index):
 
     def __init__(self):
         super(Interaction, self).__init__()
-    #     self.menu.DoubleClicked.connect(lambda : self.on_menu_DoubleClicked(self.menu.currentItem.text(0)))
-    #     QtCore.QMetaObject.connectSlotsByName(self)
-    #
-    # @QtCore.pyqtSlot(str)
-    # def on_menu_DoubleClicked(self, _item):
-    #     print str(_item) + "clicked item..."
         self.menu.itemClicked[QTreeWidgetItem, int].connect(self.onClicked)
+        # send signal of closing window
+
+    def closeWindow(self):
+        """
+        close the window
+        :param QCloseEvent:
+        :return: none
+        """
+
+        threading.Thread(target=Utility.socket_transmission, args=("exit", )).start()
 
     def onClicked(self, item, colum):
         """
@@ -38,14 +42,17 @@ class Interaction(Index):
             camera_thread.daemon = True
             camera_thread.start()
         elif task == u'人脸考勤':
+            # will be done
             pass
         elif task == u'人脸识别':
             pass
         elif task == u'人脸检索':
             pass
         elif task == u'单脸注册':
+            # will be done
             pass
         elif task == u'多脸注册':
+            # will be done
             pass
         elif task == u'身份证注册':
             pass
@@ -64,6 +71,7 @@ class Interaction(Index):
         elif task == u'统计查看':
             pass
         elif task == u'参数配置':
+            # will be done
             pass
 
 
