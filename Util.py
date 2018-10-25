@@ -11,6 +11,7 @@ import time
 import dlib
 import os
 import pymysql
+from functools import wraps
 
 
 path = "./sys.xml"
@@ -74,21 +75,25 @@ class Utility(object):
                         device.release()
                         return
                     # capture frame
-                    success, frame = device.read()
+                    success, _frame = device.read()
                     if not success:  # not captured  successfully
                         msg = "no frame was captured!"
                         print("no frame was captured!\nstop working...")
                         return
                     elif success:  # captured successfully
                         # data of frame
-                        row = frame.shape[0]
-                        col = frame.shape[1]
-                        bytesPerLine = frame.shape[2] * col
+                        row = _frame.shape[0]
+                        col = _frame.shape[1]
+                        bytesPerLine = _frame.shape[2] * col
 
                         # image processing
-                        frame_flipped = flip(frame, 1)  # 0-vertical 1-horizontal -1-ver&hor
+                        # frame_flipped = flip(frame, 1)  # 0-vertical 1-horizontal -1-ver&hor
+                        for i in range(col):
+                            _frame[:, [i, col - 1 - i]] = _frame[:, [col - 1 - i, i]]
+                            if (col - 1 - i - i) <= 2:
+                                break
                         # thread of recognition
-                        cvtColor(frame_flipped, COLOR_BGR2RGB, frame_flipped)
+                        cvtColor(_frame, COLOR_BGR2RGB, _frame)
 
                         # store cache of frames
                         global DET_CACHE_SIGNAL
@@ -98,7 +103,7 @@ class Utility(object):
                             print "save the cache of the frame for detect..."
                             img_path = os.path.join("./Cache/detect", "det_cache_" + str(NUM_DETECT_CACHE) + ".jpg")
                             # img_path = ("./Cache/detect/det_cache_".join(NUM_DETECT_CACHE)).join(".jpg")
-                            imwrite(img_path, frame)
+                            imwrite(img_path, _frame)
                             NUM_DETECT_CACHE += 1
                             if NUM_DETECT_CACHE == int(DETECT_FRAME):
                                 # have finished saving cache and init the var
@@ -110,7 +115,7 @@ class Utility(object):
                             print "save the cache of the frame for recognition..."
                             img_path = os.path.join("./Cache/recognition", "rec_cache_" + str(NUM_RECOGNITION_CACHE) + ".jpg")
                             # img_path = ("./Cache/recognition/rec_cache_".join(NUM_RECOGNITION_CACHE)).join(".jpg")
-                            imwrite(img_path, frame)
+                            imwrite(img_path, _frame)
                             NUM_RECOGNITION_CACHE += 1
                             if NUM_RECOGNITION_CACHE == int(RECOGNITION_FRAME):
                                 REC_CACHE_SIGNAL = False
@@ -119,14 +124,14 @@ class Utility(object):
                             print "save the cache of the frame for signing in..."
                             img_path = os.path.join("./Cache/sign_in", "sign_cache_" + str(NUM_SIGN_IN_CACHE) + ".jpg")
                             # img_path = ("./Cache/sign_in/sign_cache_".join(NUM_SIGN_IN_CACHE)).join(".jpg")
-                            imwrite(img_path, frame)
+                            imwrite(img_path, _frame)
                             NUM_SIGN_IN_CACHE += 1
                             if NUM_SIGN_IN_CACHE == int(REGISTER_FRAME):
                                 REG_CACHE_SIGNAL = False
                                 NUM_SIGN_IN_CACHE = 0
 
                         # show on the GUI
-                        gui_frame.setPixmap(QPixmap.fromImage(QImage(frame_flipped.data,
+                        gui_frame.setPixmap(QPixmap.fromImage(QImage(_frame.data,
                                                                      col, row, bytesPerLine,
                                                                      QImage.Format_RGB888)).scaled(gui_frame.width(),
                                                                                                    gui_frame.height()))
@@ -210,6 +215,39 @@ class Utility(object):
             conn.sendall(bytes("no_face"))
 
     @staticmethod
+    def detect_a_face(frame):
+        """
+        - backend
+        just for detect a frame
+        :param frame: a frame
+        :return: true or false
+        """
+
+        detector = dlib.get_frontal_face_detector()
+        det = detector(frame, 1)
+        if det == 1:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def recognition(img_path, conn):
+        """
+        - backend
+        face recognition
+        :param img_path: a list containing the path of processed frames (have detected => exist face)
+        :param conn: socket
+        :return: none
+        """
+
+        clf_path = os.path.join(os.getcwd(), "Training_data", "classifier.dat")
+
+        for p in img_path:
+           img = imread(p)
+
+
+
+    @staticmethod
     def socket_transmission(task):
         """
         - front end
@@ -253,6 +291,7 @@ class Utility(object):
     @staticmethod
     def sql_operation(op):
         """
+        - backend
         SQL operation
         :param op: a tuple : op[0] => operation op[1] => sql
         :return: none
@@ -281,4 +320,24 @@ class Utility(object):
             params_dict[name] = count
 
         return params_dict
+
+    @staticmethod
+    def fn_timer(function):
+        """
+        - test
+        for test the run time
+        :param function: function
+        :return:
+        """
+        @wraps(function)
+        def function_timer(*args, **kwargs):
+            t0 = time.time()
+            result = function(*args, **kwargs)
+            t1 = time.time()
+            print ("Total time running %s: %s seconds" %
+                   (function.func_name, str(t1 - t0))
+                   )
+            return result
+
+        return function_timer
 

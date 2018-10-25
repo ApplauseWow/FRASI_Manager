@@ -1,11 +1,13 @@
 # -*-coding:utf-8-*-
 
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QTreeWidgetItem
+from PyQt5.QtWidgets import QApplication, QTreeWidgetItem, QMessageBox
 from GUI import Index
 import sys
 import threading
+import time
 from Util import Utility
+
 
 class Interaction(Index):
     """
@@ -15,16 +17,24 @@ class Interaction(Index):
     def __init__(self):
         super(Interaction, self).__init__()
         self.menu.itemClicked[QTreeWidgetItem, int].connect(self.onClicked)
-        # send signal of closing window
 
-    def closeWindow(self):
-        """
-        close the window
-        :param QCloseEvent:
-        :return: none
-        """
-
-        threading.Thread(target=Utility.socket_transmission, args=("exit", )).start()
+    # def closeEvent(self, QCloseEvent):
+    #     """
+    #     closing window signal trigger this function
+    #     :param QCloseEvent: event
+    #     :return: none
+    #     """
+    #     reply = QMessageBox.question(self, u'FRASI Manager', u"是否要退出程序？",
+    #                                            QMessageBox.Yes | QMessageBox.No,
+    #                                            QMessageBox.No)
+    #     if reply == QMessageBox.Yes:
+    #         exit_thread = threading.Thread(target=Utility.socket_transmission, args=("exit",))
+    #         exit_thread.start()
+    #         time.sleep(2)
+    #         exit_thread.join()
+    #         QCloseEvent.accept()
+    #     else:
+    #         QCloseEvent.ignore()
 
     def onClicked(self, item, colum):
         """

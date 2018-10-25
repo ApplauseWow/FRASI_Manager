@@ -27,7 +27,8 @@ class Backend(SocketServer.BaseRequestHandler):
                 img_path = os.path.join(os.getcwd(), "Cache", "detect")
                 threading.Thread(target=Utility.detect_face, args=(img_path, conn)).start()
             elif ret_str == "exit":
-                break
+                return
+                # no effect
 
 
 

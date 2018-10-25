@@ -71,3 +71,32 @@
 #     print dirs
 #     print files
 
+# test: flip the frame cv.flip or run on the GPU
+import torch
+import cv2
+import time
+# import tensorflow as tf
+
+if torch.cuda.is_available():
+# with tf.device("/gpu:0"):
+    img = cv2.imread("1.jpg")
+    print type(img)
+    # _img = torch.from_numpy(img)
+    # _img.cuda()
+    start = time.time()
+    width = img.shape[1]
+    for i in range(width):
+        img[:, [i, width - 1 - i]] = img[:, [width - 1 - i, i]]
+        if (width - 1 - i - i) <= 2:
+            break
+
+    # f_img = cv2.flip(img, 1)
+    end = time.time()
+    print end - start
+    cv2.imwrite("2.jpg", img)
+
+# 1 - torch 调用gpu 翻转 15% gpu 0.18-0.22s  稳定0.182-0.199
+# 2 - 直接翻转 0.0051-0.0059s 未使用gpu？？？ **最快**
+# 3 - cv2.flip() 0.065-0.068s  未使用gpu
+
+# 使用框架调用Gpu会抢夺dlib的GPU资源使其无法使用cuda加速直接终端程序
