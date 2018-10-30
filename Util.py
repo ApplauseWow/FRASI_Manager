@@ -29,6 +29,8 @@ for param in root.iter("param"):
     param_dict[name] = count
 
 # parameters of system
+# to avoid restarting the system after modify the system parameters,
+# can modify parameters in both of the memory and xml file
 RECOGNITION_FRAME = param_dict["recognition_frame"] # the number of captured frames for recognition
 REGISTER_FRAME = param_dict["register_frame"] # the number of captured frames for register
 AUTO_SLEEP_INTERIM = param_dict["auto_sleep_interim"] # the seconds of interim
@@ -367,7 +369,6 @@ class Utility(object):
 
         return params_dict
 
-    @staticmethod
     def fn_timer(function):
         """
         - test
