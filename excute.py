@@ -55,7 +55,9 @@ class Interaction(Index):
             # will be done
             pass
         elif task == u'人脸识别':
-            pass
+            rec_thread = threading.Thread(target=Utility.save_cache_of_frame, args=("recognition", ))
+            rec_thread.daemon = True
+            rec_thread.start()
         elif task == u'人脸检索':
             pass
         elif task == u'单脸注册':

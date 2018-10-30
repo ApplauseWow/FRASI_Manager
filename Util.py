@@ -12,6 +12,10 @@ import dlib
 import os
 import pymysql
 from functools import wraps
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 
 path = "./sys.xml"
@@ -120,6 +124,8 @@ class Utility(object):
                             if NUM_RECOGNITION_CACHE == int(RECOGNITION_FRAME):
                                 REC_CACHE_SIGNAL = False
                                 NUM_RECOGNITION_CACHE = 0
+                                # send msg -- have saved cache and start recognizing
+                                threading.Thread(target=Utility.socket_transmission, args=("recognition", )).start()
                         if REG_CACHE_SIGNAL :
                             print "save the cache of the frame for signing in..."
                             img_path = os.path.join("./Cache/sign_in", "sign_cache_" + str(NUM_SIGN_IN_CACHE) + ".jpg")
@@ -160,7 +166,9 @@ class Utility(object):
         # if there is a detected face pass
         # or not so, release the object of camera
         # send msg -- start storing the cache
-        conn.sendall(bytes("save_det_cache"))
+        cmd_dict = {"save_cache": "detect"}
+        data= pickle.dumps(cmd_dict)
+        conn.sendall(data)
 
     @staticmethod
     def save_cache_of_frame(kind):
@@ -198,7 +206,8 @@ class Utility(object):
         for _file in os.listdir(img_path):
             if file == "":
                 # dir is empty
-                conn.sendall(bytes("no_file"))
+                # conn.sendall(bytes("no_file"))
+                conn.sendall(pickle.dumps("no_file"))
             else:
                 file_path = os.path.join(img_path, _file)
                 img = imread(file_path)
@@ -206,13 +215,15 @@ class Utility(object):
                 if len(dets) > 0:
                     # there is detected face
                     print "exist face!"
-                    conn.sendall(bytes("exist"))
+                    # conn.sendall(bytes("exist"))
+                    conn.sendall(pickle.dumps("exist"))
                     break
                 elif len(dets) == 0:
                     print "no face here!"
         else:
             # no face in each frame
-            conn.sendall(bytes("no_face"))
+            # conn.sendall(bytes("no_face"))
+            conn.sendall(pickle.dumps("no_face"))
 
     @staticmethod
     def detect_a_face(frame):
@@ -241,11 +252,19 @@ class Utility(object):
         """
 
         clf_path = os.path.join(os.getcwd(), "Training_data", "classifier.dat")
+        clf = joblib.load(clf_path)
+        result_dict = dict()
 
-        for p in img_path:
-           img = imread(p)
-
-
+        for f in img_path:
+            img = imread(f)
+            if Utility.detect_a_face(img):
+                # there is a face
+                face_location = face_locations(img, model="cnn")
+                face_encoding = face_encodings(img, face_location)
+                print type(face_encoding)
+            else:
+                # none face here or many faces here
+                pass
 
     @staticmethod
     def socket_transmission(task):
@@ -265,26 +284,31 @@ class Utility(object):
         if ret_str == "got":
             print "backend is working, keep accepting task..."
             obj.sendall(bytes(task))
-            ret_bytes = obj.recv(1024)
-            ret_str = str(ret_bytes)
-            # feedback
-            if ret_str == "save_det_cache":
-                # start saving the cache for detect
-                Utility.save_cache_of_frame("detect")
-                obj.close()
-            elif ret_str == "no_file":
-                # no cache exist
-                print "no cache file"
-                obj.close()
-            elif ret_str == "exist":
-                # cant't close the camera and start timing again
-                threading.Thread(target=Utility.socket_transmission, args=("timer", )).start()
-                obj.close()
-            elif ret_str == "no_face":
-                # close the camera
-                global SWITCH
-                SWITCH = False
-                obj.close()
+            ret_bytes = pickle.loads(obj.recv(1024))
+            # print type(ret_bytes)
+            if type(ret_bytes) == type('str'):
+                ret_str = str(ret_bytes)
+                # feedback
+                if ret_str == "no_file":
+                    # no cache exist
+                    print "no cache file"
+                    obj.close()
+                elif ret_str == "exist":
+                    # cant't close the camera and start timing again
+                    threading.Thread(target=Utility.socket_transmission, args=("timer",)).start()
+                    obj.close()
+                elif ret_str == "no_face":
+                    # close the camera
+                    global SWITCH
+                    SWITCH = False
+                    obj.close()
+            elif type(ret_bytes) == type(dict()):
+                # feedback
+                for key, value in ret_bytes.items():
+                    if key == "save_cache":
+                        Utility.save_cache_of_frame(value)
+                    else:
+                        pass
         else:
             print "there is something wrong with backend...\nfail to connect"
 
