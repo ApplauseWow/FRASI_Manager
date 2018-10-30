@@ -204,7 +204,7 @@ class Utility(object):
 
         detector = dlib.get_frontal_face_detector()
         for _file in os.listdir(img_path):
-            if file == "":
+            if _file == "":
                 # dir is empty
                 # conn.sendall(bytes("no_file"))
                 conn.sendall(pickle.dumps("no_file"))
@@ -236,7 +236,7 @@ class Utility(object):
 
         detector = dlib.get_frontal_face_detector()
         det = detector(frame, 1)
-        if det == 1:
+        if len(det) == 1:
             return True
         else:
             return False
@@ -253,18 +253,38 @@ class Utility(object):
 
         clf_path = os.path.join(os.getcwd(), "Training_data", "classifier.dat")
         clf = joblib.load(clf_path)
+        rec_item = list()
         result_dict = dict()
 
-        for f in img_path:
-            img = imread(f)
-            if Utility.detect_a_face(img):
-                # there is a face
-                face_location = face_locations(img, model="cnn")
-                face_encoding = face_encodings(img, face_location)
-                print type(face_encoding)
+        for _file in os.listdir(img_path):
+            if _file == "":
+                print "no file here"
+                data = pickle.dumps("no_file")
             else:
-                # none face here or many faces here
-                pass
+                file_path = os.path.join(img_path, _file)
+                img = imread(file_path)
+                if Utility.detect_a_face(img):
+                    # there is a face
+                    face_location = face_locations(img, model="cnn")
+                    face_encoding = face_encodings(img, face_location)
+                    # print type(face_encoding) <type 'list'>
+                    encoding = np.asarray(face_encoding, np.float32)
+                    _id = int(clf.predict(encoding))
+                    rec_item.append(_id)
+                else:
+                    # none face here or many faces here
+                    pass
+
+        # finish recognizing and count
+        for res in rec_item:
+            result_dict[res] = result_dict.get(res, 0) + 1 # dict.get(key, initial_num)
+        sorted_list = sorted(result_dict.items(), key= lambda x:x[1], reverse=True)
+        for key, value in sorted_list:
+            # print key, type(key)
+            # send the recognition result
+            result = {"rec_result": str(key)}
+            conn.sendall(pickle.dumps(result))
+            break
 
     @staticmethod
     def socket_transmission(task):
@@ -286,7 +306,7 @@ class Utility(object):
             obj.sendall(bytes(task))
             ret_bytes = pickle.loads(obj.recv(1024))
             # print type(ret_bytes)
-            if type(ret_bytes) == type('str'):
+            if type(ret_bytes) == type(str()):
                 ret_str = str(ret_bytes)
                 # feedback
                 if ret_str == "no_file":
@@ -307,6 +327,8 @@ class Utility(object):
                 for key, value in ret_bytes.items():
                     if key == "save_cache":
                         Utility.save_cache_of_frame(value)
+                    elif key == "rec_result":
+                        print value # time consume 2.2s
                     else:
                         pass
         else:
