@@ -10,7 +10,7 @@ from sklearn.externals import joblib
 # 不应该有unknown?这里unknown 有两个人的特征   导致guogoayu识别不出来？
 def person_id(n):
     n = bytes.decode(n)
-    id = {"guogaoyu": 201610414206, "yanglei": 201610414125}
+    id = {"guogaoyu": 201610414206, "wangleihong": 201610414225}
     return id[n]
 
 

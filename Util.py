@@ -12,11 +12,11 @@ import dlib
 import os
 import pymysql
 from functools import wraps
+import Queue
 try:
     import cPickle as pickle
 except:
     import pickle
-
 
 path = "./sys.xml"
 tree = EL.parse(path)
@@ -40,6 +40,9 @@ SWITCH = True # the status of camera - T => open F => close
 DET_CACHE_SIGNAL = False # permission for saving detect cache
 REC_CACHE_SIGNAL = False # permission for saving recognition cache
 REG_CACHE_SIGNAL = False # permission for saving register cache
+
+# the queue between the socket and GUI thread for getting the results
+result_q = Queue.Queue(1)
 
 # following functions in utilities class are scalable and pluggable
 # process runs in backend
@@ -262,16 +265,25 @@ class Utility(object):
             if _file == "":
                 print "no file here"
                 data = pickle.dumps("no_file")
+                break
             else:
                 file_path = os.path.join(img_path, _file)
+                # start = time.time() hog:each consumes 0.66s-0.68s and without GPU cnn:each consumes 0.55-0.6s gpu:56%
                 img = imread(file_path)
                 if Utility.detect_a_face(img):
                     # there is a face
+                    # face_location = face_locations(img)
+                    _face_location = list()
                     face_location = face_locations(img, model="cnn")
-                    face_encoding = face_encodings(img, face_location)
+                    _face_location.append(face_location[0]) # code here is time-consuming !
+                    face_encoding = face_encodings(img, _face_location) # or here !
                     # print type(face_encoding) <type 'list'>
                     encoding = np.asarray(face_encoding, np.float32)
-                    _id = int(clf.predict(encoding))
+                    # start = time.time() # cnn:each consumes 0.00018-0.00032s hog: similar
+                    _id = int(clf.predict(encoding)) # sometimes detect 1 face here but locate 2 face feature;so must choose [0] and append to a list
+                    # end = time.time()
+                    # print "show time:-------"
+                    # print end-start
                     rec_item.append(_id)
                 else:
                     # none face here or many faces here
@@ -287,6 +299,9 @@ class Utility(object):
             result = {"rec_result": str(key)}
             conn.sendall(pickle.dumps(result))
             break
+        else:
+            result = {"rec_result": None}
+            conn.sendall(pickle.dumps(result))
 
     @staticmethod
     def socket_transmission(task):
@@ -330,7 +345,8 @@ class Utility(object):
                     if key == "save_cache":
                         Utility.save_cache_of_frame(value)
                     elif key == "rec_result":
-                        print value # time consume 2.2s
+                        print value
+                        result_q.put(value)
                     else:
                         pass
         else:
@@ -351,21 +367,27 @@ class Utility(object):
             pass
 
     @staticmethod
-    def read_param_from_xml():
+    def read_param_from_xml(xml_path):
         """
         parse the XML file for getting the parameters of system
+        :parameter xml_path: path of xml file
         :return: params_dict that a dictionary containing the parameters of system
         """
 
-        path = "./sys.xml"
-        tree = EL.parse(path)
+        tree = EL.parse(xml_path)
         root = tree.getroot()
         params_dict = dict()
 
-        for param in root.iter("param"):
-            name = param.attrib['name']
-            count = param.attrib['count']
-            params_dict[name] = count
+        if "Training_data" in xml_path.split("/"): # training label reflection
+            for p in root.findall('info'):
+                name = p.get('name')
+                _id = p.get('_id')
+                param_dict[name] = int(_id)
+        elif "sys.xml" in xml_path.split("/"): # system parameters
+            for param in root.iter("param"):
+                name = param.attrib['name']
+                count = param.attrib['count']
+                params_dict[name] = count
 
         return params_dict
 

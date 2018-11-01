@@ -6,8 +6,9 @@ from GUI import Index
 import sys
 import threading
 import time
-from Util import Utility
-import Queue
+from Util import Utility, result_q
+
+
 
 class Interaction(Index):
     """
@@ -17,8 +18,7 @@ class Interaction(Index):
     def __init__(self):
         super(Interaction, self).__init__()
         self.menu.itemClicked[QTreeWidgetItem, int].connect(self.onClicked)
-        # the queue between the socket and GUI thread for getting the results
-        self.result_q = Queue.Queue(1)
+
 
     # def closeEvent(self, QCloseEvent):
     #     """
@@ -62,7 +62,9 @@ class Interaction(Index):
             rec_thread.daemon = True
             rec_thread.start()
             # use the queue between socket thread and main GUI thread to get the recognition result
-
+            get_thread = threading.Thread(target=self.get_q_data, args=(result_q, ))
+            get_thread.daemon = True
+            get_thread.start()
         elif task == u'人脸检索':
             pass
         elif task == u'单脸注册':
@@ -90,6 +92,25 @@ class Interaction(Index):
         elif task == u'参数配置':
             # will be done
             pass
+
+    def get_q_data(self, queue):
+        """
+        to get the data in the queue
+        :param queue: which queue
+        :return: none
+        """
+
+        while True:
+            if queue.empty():
+                pass
+            elif not queue.empty():
+                data = queue.get(timeout=5)
+                self.id_num.setText(data)
+                if data is not None:
+                    self.status.setText(u"识别成功")
+                elif data is None:
+                    self.status.setText(u"脸太多")# 后面有人
+                break
 
 
 if __name__ == "__main__":
