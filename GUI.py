@@ -18,7 +18,7 @@ class Index(QMainWindow, Ui_Index_UI):
         super(Index, self).__init__()
         self.setupUi(self)
         self.menu.expandAll()
-        self.id_ui = Ui_Identity_ID_UI()
+        # self.id_ui = Ui_Identity_ID_UI()
 
         # creating child window demo
         # self.id_window = QDialog()

@@ -380,16 +380,26 @@ class Utility(object):
 
         if "Training_data" in xml_path.split("/"): # training label reflection
             for p in root.findall('info'):
-                name = p.get('name')
+                _name = p.get('name')
                 _id = p.get('_id')
-                param_dict[name] = int(_id)
+                param_dict[_name] = int(_id)
         elif "sys.xml" in xml_path.split("/"): # system parameters
             for param in root.iter("param"):
-                name = param.attrib['name']
-                count = param.attrib['count']
-                params_dict[name] = count
+                _name = param.attrib['name']
+                _count = param.attrib['count']
+                params_dict[_name] = _count
 
         return params_dict
+
+    @staticmethod
+    def write_xml(xml_path):
+        """
+        rewrite the xml file
+        :param xml_path: path of xml file
+        :return: none
+        """
+
+
 
     def fn_timer(function):
         """
