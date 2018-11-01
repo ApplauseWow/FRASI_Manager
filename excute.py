@@ -2,12 +2,11 @@
 
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QTreeWidgetItem, QMessageBox
-from GUI import Index
+from GUI import Index, Sys_Option_UI
 import sys
 import threading
 import time
-from Util import Utility, result_q
-
+from Util import *
 
 
 class Interaction(Index):
@@ -18,7 +17,7 @@ class Interaction(Index):
     def __init__(self):
         super(Interaction, self).__init__()
         self.menu.itemClicked[QTreeWidgetItem, int].connect(self.onClicked)
-
+        self.sys_option = System()
 
     # def closeEvent(self, QCloseEvent):
     #     """
@@ -91,7 +90,7 @@ class Interaction(Index):
             pass
         elif task == u'参数配置':
             # will be done
-            pass
+            self.sys_option.show()
 
     def get_q_data(self, queue):
         """
@@ -111,6 +110,16 @@ class Interaction(Index):
                 elif data is None:
                     self.status.setText(u"脸太多")# 后面有人
                 break
+
+
+class System(Sys_Option_UI):
+
+    def __init__(self):
+        super(System, self).__init__()
+        self.recognition_count.setText(RECOGNITION_FRAME)
+        self.sign_in_count.setText(REGISTER_FRAME)
+        self.interval.setText(AUTO_SLEEP_INTERIM)
+        self.detect_coint.setText(DETECT_FRAME)
 
 
 if __name__ == "__main__":

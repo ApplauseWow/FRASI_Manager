@@ -16,15 +16,15 @@ def person_id(n):
 
 # for i in range(1, 4):
 #     # ret, frame = cv2.VideoCapture(0).read()
-#     frame = cv2.imread("./g"+str(i)+".jpg")
-#     face = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+#     face = cv2.imread("./tt"+str(i)+".jpg")
+#     # face = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
 #     location = face_recognition.face_locations(face, model="cnn")
 #     encoding = face_recognition.face_encodings(face, location)
 #     numpy.savetxt(i.__str__()+'.txt', encoding, delimiter=",")
 #     with open(i.__str__()+'.txt', "r") as f:
 #         lines = f.readlines()
 #         for line in lines:
-#             line = line.strip("\n") + ",guogaoyu\n"
+#             line = line.strip("\n") + ",trump\n"
 #             with open("data.dat", "a") as e:
 #                 e.write(line)
 

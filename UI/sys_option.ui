@@ -38,7 +38,7 @@
      <x>60</x>
      <y>50</y>
      <width>191</width>
-     <height>81</height>
+     <height>194</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
@@ -52,6 +52,22 @@
       </property>
       <property name="text">
        <string>识别帧数</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="recognition_count">
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+        <italic>true</italic>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </item>
@@ -77,15 +93,15 @@
        </font>
       </property>
       <property name="text">
-       <string>4</string>
+       <string/>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="recognition_count">
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_3">
       <property name="font">
        <font>
         <pointsize>16</pointsize>
@@ -93,7 +109,49 @@
        </font>
       </property>
       <property name="text">
-       <string>3</string>
+       <string>休眠间隔</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="interval">
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+        <italic>true</italic>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+        <italic>true</italic>
+       </font>
+      </property>
+      <property name="text">
+       <string>检测帧数</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QLineEdit" name="detect_coint">
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+        <italic>true</italic>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
