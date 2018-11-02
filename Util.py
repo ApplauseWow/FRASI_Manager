@@ -378,7 +378,7 @@ class Utility(object):
         root = tree.getroot()
         params_dict = dict()
 
-        if "Training_data" in xml_path.split("/"): # training label reflection
+        if "person.xml" in xml_path.split("/"): # training label reflection
             for p in root.findall('info'):
                 _name = p.get('name')
                 _id = p.get('_id')
@@ -392,14 +392,26 @@ class Utility(object):
         return params_dict
 
     @staticmethod
-    def write_xml(xml_path):
+    def write_xml(xml_path, param_dict):
         """
         rewrite the xml file
         :param xml_path: path of xml file
         :return: none
         """
 
+        tree = EL.parse(xml_path)
+        root = tree.getroot()
 
+        if "sys.xml" in xml_path.split("/"):
+            for param in root:
+                _name = param.attrib["name"]
+                print _name
+                # the name must be same!
+                param.set("count", param_dict[_name])
+        elif "person.xml" in xml_path.split("/"):
+            child = EL.Element('info', {'name': param_dict["name"], '_id': param_dict["_id"]})
+            root.append(child)
+        tree.write(xml_path)
 
     def fn_timer(function):
         """
