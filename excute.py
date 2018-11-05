@@ -124,6 +124,27 @@ class System(Sys_Option_UI):
         self.interval.setText(str(AUTO_SLEEP_INTERIM))
         self.detect_coint.setText(str(DETECT_FRAME))
 
+    def closeEvent(self, QCloseEvent):
+        """
+        close the dialog, and initial parameters
+        :param QCloseEvent: signal
+        :return: none
+        """
+
+        # xml_path = os.path.join(os.getcwd(), "sys.xml")
+        # params = dict()
+        # params["recognition_frame"] = self.recognition_count.text()
+        # params["register_frame"] = self.sign_in_count.text()
+        # params["auto_sleep_interim"] = self.interval.text()
+        # params["detect_frame"] = self.detect_coint.text()
+        # Utility.write_xml(xml_path, params)
+        self.recognition_count.setText(str(RECOGNITION_FRAME))
+        self.sign_in_count.setText(str(REGISTER_FRAME))
+        self.interval.setText(str(AUTO_SLEEP_INTERIM))
+        self.detect_coint.setText(str(DETECT_FRAME))
+
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     # create the instance of GUI to show it
