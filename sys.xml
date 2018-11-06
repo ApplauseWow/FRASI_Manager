@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <parameters>
-    <!--number of capturing frames to recognition each time-->
-    <param name = "recognition_frame" count = "3" />
-    <!--number of capturing frames to register each time -->
-    <param name = "register_frame" count = "6" />
-    <!--close the camera after the interim-->
-    <param name = "auto_sleep_interim" count = "10" />
-    <!--number of capturing frames to detect each time-->
-    <param name = "detect_frame" count = "3" />
+    
+    <param count="3" name="recognition_frame" />
+    
+    <param count="6" name="register_frame" />
+    
+    <param count="30" name="auto_sleep_interim" />
+    
+    <param count="3" name="detect_frame" />
 </parameters>

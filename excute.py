@@ -37,11 +37,11 @@ class Interaction(Index):
     #     else:
     #         QCloseEvent.ignore()
 
-    def onClicked(self, item, colum):
+    def onClicked(self, item, column):
         """
         when click the item in menu, trigger this function
         :param item: object of item
-        :param colum: number of colum
+        :param column: number of colum
         :return: none
         """
 
@@ -123,6 +123,8 @@ class System(Sys_Option_UI):
         self.sign_in_count.setText(str(REGISTER_FRAME))
         self.interval.setText(str(AUTO_SLEEP_INTERIM))
         self.detect_coint.setText(str(DETECT_FRAME))
+        self.rejected.connect(self.init_params)
+        self.accepted.connect(self.save_params)
 
     def closeEvent(self, QCloseEvent):
         """
@@ -131,19 +133,35 @@ class System(Sys_Option_UI):
         :return: none
         """
 
-        # xml_path = os.path.join(os.getcwd(), "sys.xml")
-        # params = dict()
-        # params["recognition_frame"] = self.recognition_count.text()
-        # params["register_frame"] = self.sign_in_count.text()
-        # params["auto_sleep_interim"] = self.interval.text()
-        # params["detect_frame"] = self.detect_coint.text()
-        # Utility.write_xml(xml_path, params)
         self.recognition_count.setText(str(RECOGNITION_FRAME))
         self.sign_in_count.setText(str(REGISTER_FRAME))
         self.interval.setText(str(AUTO_SLEEP_INTERIM))
         self.detect_coint.setText(str(DETECT_FRAME))
 
+    def init_params(self):
+        """
+        init the params if didn't accept
+        :return: none
+        """
 
+        self.recognition_count.setText(str(RECOGNITION_FRAME))
+        self.sign_in_count.setText(str(REGISTER_FRAME))
+        self.interval.setText(str(AUTO_SLEEP_INTERIM))
+        self.detect_coint.setText(str(DETECT_FRAME))
+
+    def save_params(self):
+        """
+        save the params in the dialog
+        :return: none
+        """
+
+        xml_path = os.path.join(os.getcwd(), "sys.xml")
+        params = dict()
+        params["recognition_frame"] = self.recognition_count.text()
+        params["register_frame"] = self.sign_in_count.text()
+        params["auto_sleep_interim"] = self.interval.text()
+        params["detect_frame"] = self.detect_coint.text()
+        Utility.write_xml(xml_path, params)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
