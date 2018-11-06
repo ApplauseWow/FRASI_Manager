@@ -18,6 +18,7 @@ try:
 except:
     import pickle
 
+# preparation - parse params and clear the cache
 path = "./sys.xml"
 tree = EL.parse(path)
 root = tree.getroot()
@@ -27,6 +28,9 @@ for param in root.iter("param"):
     name = param.attrib['name']
     count = param.attrib['count']
     param_dict[name] = count
+
+file_list = map(lambda x: map(lambda y: os.path.join(x, y), os.listdir(x)), map(lambda x:os.path.join(os.getcwd(), "Cache", x), ["detect", "recognition", "sign_in"]))
+map(lambda x: map(lambda y: os.remove(y), x), file_list)
 
 # parameters of system
 # to avoid restarting the system after modify the system parameters,
