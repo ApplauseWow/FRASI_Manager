@@ -18,7 +18,8 @@ try:
 except:
     import pickle
 
-# preparation - parse params and clear the cache
+# preparation
+# -parse parameters
 path = "./sys.xml"
 tree = EL.parse(path)
 root = tree.getroot()
@@ -29,6 +30,7 @@ for param in root.iter("param"):
     count = param.attrib['count']
     param_dict[name] = count
 
+# -clear the cache
 file_list = map(lambda x: map(lambda y: os.path.join(x, y), os.listdir(x)), map(lambda x:os.path.join(os.getcwd(), "Cache", x), ["detect", "recognition", "sign_in"]))
 map(lambda x: map(lambda y: os.remove(y), x), file_list)
 
@@ -300,7 +302,13 @@ class Utility(object):
         for key, value in sorted_list:
             # print key, type(key)
             # send the recognition result
-            result = {"rec_result": str(key)}
+            info_dict = dict()
+            sql = "select name from user_inf where userid=%s"
+            op = ["select", sql, [str(key)]]
+            info = Utility.sql_operation(op)
+            info['id'] = str(key)
+            info['date'] = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+            result = {"rec_result": info}
             conn.sendall(pickle.dumps(result))
             break
         else:
@@ -350,6 +358,9 @@ class Utility(object):
                         Utility.save_cache_of_frame(value)
                     elif key == "rec_result":
                         print value
+                        # value is a information dictionary
+                        if not result_q.empty():
+                            result_q.get()  # clear the queue
                         result_q.put(value)
                     else:
                         pass
@@ -361,14 +372,46 @@ class Utility(object):
         """
         - backend
         SQL operation
-        :param op: a tuple : op[0] => operation op[1] => sql
-        :return: none
+        :param op: a list : op[0] => operation op[1] => sql, op[2]: args list
+        :return: result dictionary
         """
 
-        db = pymysql.connect("localhost", "root", "123qwe", "frasi")
-        with db:
-            # sql operation
-            pass
+        _host = "localhost"
+        _user = "root"
+        _pwd = "123qwe"
+        _db = "frasi"
+        arg_list = op[2]
+        sql = op[1]
+        operation = op[0]
+        result_dict = dict()
+
+        try:
+            db = pymysql.connect(host=_host, user=_user, password=_pwd, db=_db, port=3306, charset="utf8")
+            with db:
+                # sql operation
+                print "db connected..."
+                cursor = db.cursor()
+                if operation == "select":
+                    cursor.execute(sql, args=arg_list)
+                    print "select..."
+                    result = cursor.fetchall()
+                    for row in result:
+                        _name = row[0]
+                        result_dict['name'] = _name
+                elif operation == "insert":
+                    effect_row = cursor.execute(sql, args=arg_list)
+                    print type(effect_row)
+                    if effect_row > 0:
+                        result_dict['result'] = effect_row
+                    else:
+                        result_dict['result'] = 0
+                    db.commit()
+                cursor.close()
+        except Exception as e:
+            print e
+        return result_dict
+
+
 
     @staticmethod
     def read_param_from_xml(xml_path):

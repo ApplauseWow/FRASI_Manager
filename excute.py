@@ -17,7 +17,12 @@ class Interaction(Index):
     def __init__(self):
         super(Interaction, self).__init__()
         self.menu.itemClicked[QTreeWidgetItem, int].connect(self.onClicked)
+        self.id_num.setText("")
+        self.name.setText("")
+        self.date.setText("")
+        self.status.setText("")
         self.sys_ui = System()
+        self.re_signal = True
 
     # def closeEvent(self, QCloseEvent):
     #     """
@@ -52,26 +57,31 @@ class Interaction(Index):
             camera_thread = threading.Thread(target=Utility.open_camera, args=(self.frame, ))
             camera_thread.daemon = True
             camera_thread.start()
-        elif task == u'人脸考勤':
-            # will be done
-            pass
-        elif task == u'人脸识别':
-            self.status.setText(u'识别中...')
-            rec_thread = threading.Thread(target=Utility.save_cache_of_frame, args=("recognition", ))
-            rec_thread.daemon = True
-            rec_thread.start()
-            # use the queue between socket thread and main GUI thread to get the recognition result
-            get_thread = threading.Thread(target=self.get_q_data, args=(result_q, ))
-            get_thread.daemon = True
-            get_thread.start()
+        elif task is u'人脸识别' or u"人脸考勤":
+            if self.re_signal:
+                self.re_signal = False
+                rec_thread = threading.Thread(target=Utility.save_cache_of_frame, args=("recognition",))
+                rec_thread.daemon = True
+                rec_thread.start()
+                # use the queue between socket thread and main GUI thread to get the recognition result
+                if task == u"人脸考勤":
+                    self.status.setText(u"考勤中...")
+                    get_thread = threading.Thread(target=self.get_q_data, args=(result_q, True))
+                else:
+                    self.status.setText(u'识别中...')
+                    get_thread = threading.Thread(target=self.get_q_data, args=(result_q, ))
+                get_thread.daemon = True
+                get_thread.start()
+            elif not self.re_signal:
+                # back end is recognizing... wait...
+                pass
         elif task == u'人脸检索':
             pass
         elif task == u'单脸注册':
             # will be done
             pass
         elif task == u'多脸注册':
-            # will be done
-            pass
+            Utility.sql_operation("insert")
         elif task == u'身份证注册':
             pass
         elif task == u'语音识别':
@@ -92,10 +102,11 @@ class Interaction(Index):
             # will be done
             self.sys_ui.show()
 
-    def get_q_data(self, queue):
+    def get_q_data(self, queue, attendance=False):
         """
         to get the data in the queue
         :param queue: which queue
+        :param attendance: attendance
         :return: none
         """
 
@@ -103,13 +114,35 @@ class Interaction(Index):
             if queue.empty():
                 pass
             elif not queue.empty():
-                data = queue.get(timeout=5)
-                self.id_num.setText(data)
-                if data is not None:
-                    self.status.setText(u"识别成功")
-                elif data is None:
-                    self.status.setText(u"脸太多")# 后面有人
-                break
+                try:
+                    data = queue.get(timeout=5)
+                    self.id_num.setText(data['id'])
+                    self.name.setText(data['name'])
+                    self.date.setText(data['date'])
+                    if data is not None:
+                        if not attendance:
+                            self.status.setText(u"识别成功")
+                        elif attendance:
+                            sql = "insert into attendance_record (userid, device_deployment_id, remarks, attendance_status, time) values(%s,%s,%s,%s,%s)"
+                            arg_list = [data['id'], 1, '1', '1', data['date']]
+                            op = ["insert", sql, arg_list]
+                            feedback = Utility.sql_operation(op)
+                            if feedback['result'] > 0:
+                                self.status.setText(u"考勤成功")
+                            else:
+                                self.status.setText(u"考勤失败")
+                    elif data is None:
+                        self.status.setText(u"脸太多")  # 后面有人
+                    self.re_signal = True
+                    break
+                except Queue.Empty as e:
+                    print e
+                    self.id_num.setText("")
+                    self.name.setText("")
+                    self.date.setText("")
+                    self.status.setText(u"重新操作")
+                    self.re_signal = True
+                    break
 
 
 class System(Sys_Option_UI):
