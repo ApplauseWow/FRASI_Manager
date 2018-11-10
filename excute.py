@@ -2,7 +2,7 @@
 
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QTreeWidgetItem, QMessageBox, QDialog
-from GUI import Index, Sys_Option_UI
+from GUI import Index, Sys_Option_UI, Identify_Id_UI, Sign_In_UI
 import sys
 import threading
 import time
@@ -22,6 +22,7 @@ class Interaction(Index):
         self.date.setText("")
         self.status.setText("")
         self.sys_ui = System()
+        # self.compare_ui = Compare()
         self.re_signal = True
 
     # def closeEvent(self, QCloseEvent):
@@ -57,7 +58,7 @@ class Interaction(Index):
             camera_thread = threading.Thread(target=Utility.open_camera, args=(self.frame, ))
             camera_thread.daemon = True
             camera_thread.start()
-        elif task is u'人脸识别' or u"人脸考勤":
+        elif task == u'人脸识别' or task == u"人脸考勤":
             if self.re_signal:
                 self.re_signal = False
                 rec_thread = threading.Thread(target=Utility.save_cache_of_frame, args=("recognition",))
@@ -78,10 +79,12 @@ class Interaction(Index):
         elif task == u'人脸检索':
             pass
         elif task == u'单脸注册':
-            # will be done
-            pass
+            self.setDisabled(True)
+            compare_ui = Compare(self)
+            compare_ui.raise_()
+            compare_ui.show()
         elif task == u'多脸注册':
-            Utility.sql_operation("insert")
+            pass
         elif task == u'身份证注册':
             pass
         elif task == u'语音识别':
@@ -195,6 +198,17 @@ class System(Sys_Option_UI):
         params["auto_sleep_interim"] = self.interval.text()
         params["detect_frame"] = self.detect_coint.text()
         Utility.write_xml(xml_path, params)
+
+
+class Compare(Identify_Id_UI):
+    """
+    to make sure that there exist this identity
+    """
+
+    def __init__(self):
+        super(Compare, self).__init__()
+        self.id_input.setText("")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
