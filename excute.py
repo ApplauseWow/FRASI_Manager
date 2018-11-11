@@ -117,13 +117,13 @@ class Interaction(Index):
             elif not queue.empty():
                 try:
                     data = queue.get(timeout=5)
-                    self.id_num.setText(data['id'])
-                    self.name.setText(data['name'])
-                    self.date.setText(data['date'])
                     if data is not None:
+                        self.id_num.setText(data['id'])
+                        self.name.setText(data['name'])
                         if not attendance:
                             self.status.setText(u"识别成功")
                         elif attendance:
+                            self.date.setText(data['date'])
                             sql = "insert into attendance_record (userid, device_deployment_id, remarks, attendance_status, time) values(%s,%s,%s,%s,%s)"
                             arg_list = [data['id'], 1, '1', '1', data['date']]
                             op = ["insert", sql, arg_list]
@@ -133,7 +133,10 @@ class Interaction(Index):
                             else:
                                 self.status.setText(u"考勤失败")
                     elif data is None:
-                        self.status.setText(u"脸太多")  # 后面有人
+                        self.id_num.clear()
+                        self.name.clear()
+                        self.date.clear()
+                        self.status.setText(u"谁在这里")  # 后面有人
                     self.re_signal = True
                     break
                 except Queue.Empty as e:
