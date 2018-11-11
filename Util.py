@@ -411,8 +411,6 @@ class Utility(object):
             print e
         return result_dict
 
-
-
     @staticmethod
     def read_param_from_xml(xml_path):
         """

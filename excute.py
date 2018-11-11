@@ -17,10 +17,10 @@ class Interaction(Index):
     def __init__(self):
         super(Interaction, self).__init__()
         self.menu.itemClicked[QTreeWidgetItem, int].connect(self.onClicked)
-        self.id_num.setText("")
-        self.name.setText("")
-        self.date.setText("")
-        self.status.setText("")
+        self.id_num.clear()
+        self.name.clear()
+        self.date.clear()
+        self.status.clear()
         self.sys_ui = System()
         self.register_ui = Register()
         self.compare_ui = Compare()
@@ -81,9 +81,9 @@ class Interaction(Index):
         elif task == u'人脸检索':
             pass
         elif task == u'单脸注册':
-            self.compare_ui.exec_() # lock the window until it's closed
-        elif task == u'多脸注册':
             pass
+        elif task == u'多脸注册':
+            self.compare_ui.exec_() # lock the window until it's closed
         elif task == u'身份证注册':
             pass
         elif task == u'语音识别':
@@ -138,9 +138,9 @@ class Interaction(Index):
                     break
                 except Queue.Empty as e:
                     print e
-                    self.id_num.setText("")
-                    self.name.setText("")
-                    self.date.setText("")
+                    self.id_num.clear()
+                    self.name.clear()
+                    self.date.clear()
                     self.status.setText(u"重新操作")
                     self.re_signal = True
                     break
@@ -208,9 +208,9 @@ class Compare(Identify_Id_UI):
 
     def __init__(self):
         super(Compare, self).__init__()
-        self.id_input.setText("")
-        self.id_button.accepted.connect(self.search_for_identity)
-        self.id_button.rejected.connect(self.close_window)
+        self.id_input.clear()
+        self.ok.clicked.connect(self.search_for_identity)
+        self.cancel.clicked.connect(self.close_window)
 
     def closeEvent(self, QCloseEvent):
         """
@@ -219,7 +219,7 @@ class Compare(Identify_Id_UI):
         :return: none
         """
 
-        self.id_input.setText("")
+        self.id_input.clear()
 
     def close_window(self):
         """
@@ -227,7 +227,7 @@ class Compare(Identify_Id_UI):
         :return: none
         """
 
-        self.id_input.setText("")
+        self.close()
 
     def search_for_identity(self):
         """
@@ -236,7 +236,7 @@ class Compare(Identify_Id_UI):
         """
 
         if self.id_input.text().split(): # []
-            self.tip.setText("")
+            self.tip.clear()
             sql = "select * from user_inf where userid=%s"
             arg_list = [self.id_input.text()]
             op = ["select", sql, arg_list]
@@ -244,8 +244,8 @@ class Compare(Identify_Id_UI):
             if result:
                 # exist this identity
                 self.id_exist_signal.emit(self.id_input.text())
-                self.hide()
-                self.id_input.setText("")
+                self.id_input.clear()
+                self.accept()
             else:
                 self.tip.setText(u"信息不存在，请到后台注册授权")
         else:

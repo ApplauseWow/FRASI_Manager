@@ -33,7 +33,6 @@ class Backend(SocketServer.BaseRequestHandler):
                 # no effect
 
 
-
 if __name__ == "__main__":
     server = SocketServer.ThreadingTCPServer(("127.0.0.1", 44967), Backend)
     server.serve_forever()
