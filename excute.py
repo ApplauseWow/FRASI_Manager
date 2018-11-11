@@ -22,7 +22,9 @@ class Interaction(Index):
         self.date.setText("")
         self.status.setText("")
         self.sys_ui = System()
-        # self.compare_ui = Compare()
+        self.register_ui = Register()
+        self.compare_ui = Compare()
+        self.compare_ui.id_exist_signal.connect(self.register_ui.exec_)
         self.re_signal = True
 
     # def closeEvent(self, QCloseEvent):
@@ -79,10 +81,7 @@ class Interaction(Index):
         elif task == u'人脸检索':
             pass
         elif task == u'单脸注册':
-            self.setDisabled(True)
-            compare_ui = Compare(self)
-            compare_ui.raise_()
-            compare_ui.show()
+            self.compare_ui.exec_() # lock the window until it's closed
         elif task == u'多脸注册':
             pass
         elif task == u'身份证注册':
@@ -102,8 +101,7 @@ class Interaction(Index):
         elif task == u'统计查看':
             pass
         elif task == u'参数配置':
-            # will be done
-            self.sys_ui.show()
+            self.sys_ui.exec_()
 
     def get_q_data(self, queue, attendance=False):
         """
@@ -202,12 +200,66 @@ class System(Sys_Option_UI):
 
 class Compare(Identify_Id_UI):
     """
+    override the Identify_Id_UI
     to make sure that there exist this identity
     """
+
+    id_exist_signal = QtCore.pyqtSignal(str)
 
     def __init__(self):
         super(Compare, self).__init__()
         self.id_input.setText("")
+        self.id_button.accepted.connect(self.search_for_identity)
+        self.id_button.rejected.connect(self.close_window)
+
+    def closeEvent(self, QCloseEvent):
+        """
+        close the window
+        :param QCloseEvent: event signal
+        :return: none
+        """
+
+        self.id_input.setText("")
+
+    def close_window(self):
+        """
+        close the window
+        :return: none
+        """
+
+        self.id_input.setText("")
+
+    def search_for_identity(self):
+        """
+        search for the inputted identity from DB
+        :return: none
+        """
+
+        if self.id_input.text().split(): # []
+            self.tip.setText("")
+            sql = "select * from user_inf where userid=%s"
+            arg_list = [self.id_input.text()]
+            op = ["select", sql, arg_list]
+            result = Utility.sql_operation(op)
+            if result:
+                # exist this identity
+                self.id_exist_signal.emit(self.id_input.text())
+                self.hide()
+                self.id_input.setText("")
+            else:
+                self.tip.setText(u"信息不存在，请到后台注册授权")
+        else:
+            self.tip.setText(u"不能为空！")
+
+
+class Register(Sign_In_UI):
+    """
+    override the Sign_In_UI
+    ask custom to select the frames to register
+    """
+
+    def __init__(self):
+        super(Register, self).__init__()
 
 
 if __name__ == "__main__":
