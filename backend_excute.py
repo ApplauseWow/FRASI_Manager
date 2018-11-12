@@ -21,6 +21,8 @@ class Backend(SocketServer.BaseRequestHandler):
                 threading.Thread(target=Utility.recognition, args=(img_path, conn)).start()
             elif ret_str == "sign_in":
                 print "got it, sign in..."
+                img_path = os.path.join(os.getcwd(), "Cache", "sign_in")
+                threading.Thread(target=Utility.sign_in, args=(img_path, conn)).start()
             elif ret_str == "timer":
                 print "got it, timing..."
                 threading.Thread(target=Utility.camera_timer, args=(float(AUTO_SLEEP_INTERIM),conn)).start()

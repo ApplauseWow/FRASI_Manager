@@ -1,7 +1,7 @@
 # -*-coding:utf-8-*-
 
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QTreeWidgetItem, QMessageBox, QDialog
+from PyQt5.QtWidgets import QApplication, QTreeWidgetItem, QMessageBox, QDialog, QLabel
 from GUI import Index, Sys_Option_UI, Identify_Id_UI, Sign_In_UI
 import sys
 import threading
@@ -24,7 +24,7 @@ class Interaction(Index):
         self.sys_ui = System()
         self.register_ui = Register()
         self.compare_ui = Compare()
-        self.compare_ui.id_exist_signal.connect(self.register_ui.exec_)
+        self.compare_ui.id_exist_signal.connect(self.register_ui.show_cache)
         self.re_signal = True
 
     # def closeEvent(self, QCloseEvent):
@@ -207,11 +207,12 @@ class Compare(Identify_Id_UI):
     to make sure that there exist this identity
     """
 
-    id_exist_signal = QtCore.pyqtSignal(str)
+    id_exist_signal = QtCore.pyqtSignal(list)
 
     def __init__(self):
         super(Compare, self).__init__()
         self.id_input.clear()
+        self.tip.setText(u"确定后，请将脸对准摄像头")
         self.ok.clicked.connect(self.search_for_identity)
         self.cancel.clicked.connect(self.close_window)
 
@@ -246,9 +247,20 @@ class Compare(Identify_Id_UI):
             result = Utility.sql_operation(op)
             if result:
                 # exist this identity
-                self.id_exist_signal.emit(self.id_input.text())
-                self.id_input.clear()
-                self.accept()
+                sign_t = threading.Thread(target=Utility.save_cache_of_frame, args=("sign_in", ))
+                sign_t.daemon = True
+                sign_t.start()
+                self.tip.setText(u"请稍后，正在拍照")
+                while not register_q.empty():
+                    pass
+                args = register_q.get(timeout=5)
+                if args is None:
+                    self.tip.setText(u"请重新提交，并对准摄像头")
+                elif args is not None:
+                    data_list = [args, self.id_input.text()]
+                    self.id_exist_signal.emit(data_list)
+                    self.id_input.clear()
+                    self.accept()
             else:
                 self.tip.setText(u"信息不存在，请到后台注册授权")
         else:
@@ -263,6 +275,31 @@ class Register(Sign_In_UI):
 
     def __init__(self):
         super(Register, self).__init__()
+
+
+    def show_cache(self, arg_list):
+        """
+        show the caches
+        :param arg_list: some arguments (fave_list, id)
+        :return: none
+        """
+
+        face_list = arg_list[0]
+        list_len = len(face_list)
+
+        positions = [(0, y) for y in range(list_len)]
+        for position, name in zip(positions, face_list):
+            lab = QLabel()
+            lab.setFixedSize(100, 150)
+            pix = QPixmap(name)
+            lab.setPixmap(pix)
+            self.gridLayoutWidget
+        self.exec_()
+
+
+
+
+
 
 
 if __name__ == "__main__":

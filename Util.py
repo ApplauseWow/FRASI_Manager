@@ -49,6 +49,8 @@ REG_CACHE_SIGNAL = False # permission for saving register cache
 
 # the queue between the socket and GUI thread for getting the results
 result_q = Queue.Queue(1)
+# the queue between the socket and GUI thread for selecting frames
+register_q = Queue.Queue(1)
 
 # following functions in utilities class are scalable and pluggable
 # process runs in backend
@@ -146,7 +148,7 @@ class Utility(object):
                             if NUM_SIGN_IN_CACHE == int(REGISTER_FRAME):
                                 REG_CACHE_SIGNAL = False
                                 NUM_SIGN_IN_CACHE = 0
-
+                                threading.Thread(target=Utility.socket_transmission, args=("sign_in", )).start()
                         # show on the GUI
                         gui_frame.setPixmap(QPixmap.fromImage(QImage(_frame.data,
                                                                      col, row, bytesPerLine,
@@ -268,32 +270,27 @@ class Utility(object):
         result_dict = dict()
 
         for _file in os.listdir(img_path):
-            if _file == "":
-                print "no file here"
-                data = pickle.dumps("no_file")
-                break
+            file_path = os.path.join(img_path, _file)
+            # start = time.time() hog:each consumes 0.66s-0.68s and without GPU cnn:each consumes 0.55-0.6s gpu:56%
+            img = imread(file_path)
+            if Utility.detect_a_face(img):
+                # there is a face
+                # face_location = face_locations(img)
+                _face_location = list()
+                face_location = face_locations(img, model="cnn")
+                _face_location.append(face_location[0]) # code here is time-consuming !
+                face_encoding = face_encodings(img, _face_location) # or here !
+                # print type(face_encoding) <type 'list'>
+                encoding = np.asarray(face_encoding, np.float32)
+                # start = time.time() # cnn:each consumes 0.00018-0.00032s hog: similar
+                _id = int(clf.predict(encoding)) # sometimes detect 1 face here but locate 2 face feature;so must choose [0] and append to a list
+                # end = time.time()
+                # print "show time:-------"
+                # print end-start
+                rec_item.append(_id)
             else:
-                file_path = os.path.join(img_path, _file)
-                # start = time.time() hog:each consumes 0.66s-0.68s and without GPU cnn:each consumes 0.55-0.6s gpu:56%
-                img = imread(file_path)
-                if Utility.detect_a_face(img):
-                    # there is a face
-                    # face_location = face_locations(img)
-                    _face_location = list()
-                    face_location = face_locations(img, model="cnn")
-                    _face_location.append(face_location[0]) # code here is time-consuming !
-                    face_encoding = face_encodings(img, _face_location) # or here !
-                    # print type(face_encoding) <type 'list'>
-                    encoding = np.asarray(face_encoding, np.float32)
-                    # start = time.time() # cnn:each consumes 0.00018-0.00032s hog: similar
-                    _id = int(clf.predict(encoding)) # sometimes detect 1 face here but locate 2 face feature;so must choose [0] and append to a list
-                    # end = time.time()
-                    # print "show time:-------"
-                    # print end-start
-                    rec_item.append(_id)
-                else:
-                    # none face here or many faces here
-                    pass
+                # none face here or many faces here
+                pass
 
         # finish recognizing and count
         for res in rec_item:
@@ -314,6 +311,31 @@ class Utility(object):
         else:
             result = {"rec_result": None}
             conn.sendall(pickle.dumps(result))
+
+    @staticmethod
+    def sign_in(img_path, conn):
+        """
+        - backend
+        sign in
+        :param img_path: path of cache
+        :param conn: socket
+        :return: none
+        """
+
+        face_list = list()
+        for _file in os.listdir(img_path):
+            file_path = os.path.join(img_path, _file)
+            frame = cv2.imread(file_path)
+            if Utility.detect_a_face(frame):
+                face_list.append(file_path)
+            else:
+                pass
+        data = dict()
+        if len(face_list) == 0: # no suitable frame
+            data["show_cache"] = None
+        else:
+            data["show_cache"] = face_list
+        conn.sendall(pickle.dumps(data))
 
     @staticmethod
     def socket_transmission(task):
@@ -362,6 +384,10 @@ class Utility(object):
                         if not result_q.empty():
                             result_q.get()  # clear the queue
                         result_q.put(value)
+                    elif key == "show_cache":
+                        if not register_q.empty():
+                            register_q.get()
+                        register_q.put(value)
                     else:
                         pass
         else:
