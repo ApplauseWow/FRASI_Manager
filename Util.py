@@ -325,7 +325,7 @@ class Utility(object):
         face_list = list()
         for _file in os.listdir(img_path):
             file_path = os.path.join(img_path, _file)
-            frame = cv2.imread(file_path)
+            frame = imread(file_path)
             if Utility.detect_a_face(frame):
                 face_list.append(file_path)
             else:

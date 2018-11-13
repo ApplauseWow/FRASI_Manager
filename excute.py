@@ -1,7 +1,7 @@
 # -*-coding:utf-8-*-
 
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QTreeWidgetItem, QMessageBox, QDialog, QLabel
+from PyQt5.QtWidgets import QApplication, QTreeWidgetItem, QMessageBox, QDialog, QLabel, QWidget
 from GUI import Index, Sys_Option_UI, Identify_Id_UI, Sign_In_UI
 import sys
 import threading
@@ -251,7 +251,7 @@ class Compare(Identify_Id_UI):
                 sign_t.daemon = True
                 sign_t.start()
                 self.tip.setText(u"请稍后，正在拍照")
-                while not register_q.empty():
+                while register_q.empty():
                     pass
                 args = register_q.get(timeout=5)
                 if args is None:
@@ -273,9 +273,11 @@ class Register(Sign_In_UI):
     ask custom to select the frames to register
     """
 
+    training_signal = QtCore.pyqtSignal(list)
+
     def __init__(self):
         super(Register, self).__init__()
-
+        self.ok.clicked.connect(self.training)
 
     def show_cache(self, arg_list):
         """
@@ -288,19 +290,39 @@ class Register(Sign_In_UI):
         list_len = len(face_list)
 
         positions = [(0, y) for y in range(list_len)]
+        self.filewidget = QWidget()
+        self.filewidget.setMinimumSize(350, 1800)
         for position, name in zip(positions, face_list):
-            lab = QLabel()
-            lab.setFixedSize(100, 150)
-            pix = QPixmap(name)
-            lab.setPixmap(pix)
-            self.gridLayoutWidget
+            lab = QLabel(self.filewidget)
+            lab.setFixedSize(350, 200)
+            _frame = imread(name)
+            # cvtColor(_frame, COLOR_BGR2RGB, _frame)
+            row = _frame.shape[0]
+            col = _frame.shape[1]
+            bytesPerLine = _frame.shape[2] * col
+            lab.setPixmap(QPixmap.fromImage(QImage(_frame.data, col, row, bytesPerLine, QImage.Format_RGB888)).scaled(lab.width(), lab.height()))
+            lab.move(300 * position[0] + 50, 250 * position[1] + 70)
+        self.scrollArea.setWidget(self.filewidget)
+        self.training_signal.emit(face_list)
         self.exec_()
 
+    def training(self):
+        """
 
+        :param face_list:
+        :return:
+        """
 
+        self.training_signal.connect(self.send_list)
 
+    def send_list(self, face_list):
+        """
 
+        :param face_list:
+        :return:
+        """
 
+        threading.Thread(target=Utility.socket_transmission, args=(""))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
