@@ -350,6 +350,7 @@ class Utility(object):
         """
 
         feture_path = os.path.join(os.getcwd(), "Training_data", "data.dat")
+        cls_path = os.path.join(os.getcwd(), "Training_data", "classifier.dat")
         xml_path = os.path.join(os.getcwd(), "Training_data","person.xml")
         persons = Utility.read_param_from_xml(xml_path)
         if name in persons or _id in persons.values():
@@ -385,7 +386,7 @@ class Utility(object):
         x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=42, train_size=0.6)
         classifier = svm.SVC(C=0.8, gamma=20, kernel='rbf', probability=True, decision_function_shape='ovr')
         classifier.fit(x_train, y_train)
-        joblib.dump(classifier, "classifier.dat")
+        joblib.dump(classifier, cls_path)
 
         conn.sendall(pickle.dumps("train_done"))
 
