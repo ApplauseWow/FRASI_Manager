@@ -13,7 +13,7 @@ def person_id(n):
     id = {"guogaoyu": 201610414206, "trump": 201610414225}
     return id[n]
 
-
+#
 # for i in range(1, 4):
 #     # ret, frame = cv2.VideoCapture(0).read()
 #     face = cv2.imread("./tt"+str(i)+".jpg")

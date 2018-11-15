@@ -212,6 +212,7 @@ class Compare(Identify_Id_UI):
     def __init__(self):
         super(Compare, self).__init__()
         self.id_input.clear()
+        self.name_input.clear()
         self.tip.setText(u"确定后，请将脸对准摄像头")
         self.ok.clicked.connect(self.search_for_identity)
         self.cancel.clicked.connect(self.close_window)
@@ -224,6 +225,7 @@ class Compare(Identify_Id_UI):
         """
 
         self.id_input.clear()
+        self.name_input.clear()
 
     def close_window(self):
         """
@@ -239,7 +241,7 @@ class Compare(Identify_Id_UI):
         :return: none
         """
 
-        if self.id_input.text().split(): # []
+        if self.id_input.text().split() and self.name_input.text().split(): # []
             self.tip.clear()
             sql = "select * from user_inf where userid=%s"
             arg_list = [self.id_input.text()]
@@ -257,7 +259,7 @@ class Compare(Identify_Id_UI):
                 if args is None:
                     self.tip.setText(u"请重新提交，并对准摄像头")
                 elif args is not None:
-                    data_list = [args, self.id_input.text()]
+                    data_list = [args, self.id_input.text(), self.name_input.text()]
                     self.id_exist_signal.emit(data_list)
                     self.id_input.clear()
                     self.accept()
@@ -278,14 +280,16 @@ class Register(Sign_In_UI):
     def __init__(self):
         super(Register, self).__init__()
         self.ok.clicked.connect(self.training)
+        self.data_list = list()
 
     def show_cache(self, arg_list):
         """
         show the caches
-        :param arg_list: some arguments (fave_list, id)
+        :param arg_list: some arguments (fave_list, id, name)
         :return: none
         """
 
+        self.data_list = arg_list
         face_list = arg_list[0]
         list_len = len(face_list)
 
@@ -303,7 +307,6 @@ class Register(Sign_In_UI):
             lab.setPixmap(QPixmap.fromImage(QImage(_frame.data, col, row, bytesPerLine, QImage.Format_RGB888)).scaled(lab.width(), lab.height()))
             lab.move(300 * position[0] + 50, 250 * position[1] + 70)
         self.scrollArea.setWidget(self.filewidget)
-        self.training_signal.emit(face_list)
         self.exec_()
 
     def training(self):
@@ -314,15 +317,21 @@ class Register(Sign_In_UI):
         """
 
         self.training_signal.connect(self.send_list)
+        self.training_signal.emit(self.data_list)
 
-    def send_list(self, face_list):
+    def send_list(self, data):
         """
 
-        :param face_list:
-        :return:
+        :param data:[0] -> face [1] -> id
+        :return: none
         """
 
-        threading.Thread(target=Utility.socket_transmission, args=(""))
+        print "will send the list..."
+        send_data = dict()
+        send_data['register_data'] = data
+        threading.Thread(target=Utility.socket_transmission, args=(pickle.dumps(send_data),)).start()
+        self.accept()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

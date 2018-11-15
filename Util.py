@@ -1,5 +1,6 @@
 from sklearn.externals import joblib
 from sklearn import svm
+from sklearn.model_selection import train_test_split
 from face_recognition import face_locations, face_encodings
 from PyQt5.QtGui import QPixmap, QImage
 import socket
@@ -338,6 +339,57 @@ class Utility(object):
         conn.sendall(pickle.dumps(data))
 
     @staticmethod
+    def training(face_list, _id, name, conn):
+        """
+        training the model
+        :param face_list: the path of frame
+        :param _id: identity
+        :param conn: socket
+        :param name: name
+        :return: none
+        """
+
+        feture_path = os.path.join(os.getcwd(), "Training_data", "data.dat")
+        xml_path = os.path.join(os.getcwd(), "Training_data","person.xml")
+        persons = Utility.read_param_from_xml(xml_path)
+        if name in persons or _id in persons.values():
+            pass
+        else:
+            person = dict()
+            person["name"] = name
+            person["_id"] = _id
+            persons[name] = _id
+            Utility.write_xml(xml_path, person)
+
+        def person_id(n):
+            n = bytes.decode(n)
+            return persons[n]
+
+        for _file, i in zip(face_list, [x for x in range(len(face_list))]):
+            # ret, frame = cv2.VideoCapture(0).read()
+            face = imread(_file)
+            face = resize(face, (0, 0), fx=0.25, fy=0.25)
+            location = face_locations(face, model="cnn")
+            encoding = face_encodings(face, location)
+            d_path = os.path.join(os.getcwd(), "Training_data", i.__str__() + '.txt')
+            np.savetxt(d_path, encoding, delimiter=",")
+            with open(d_path, "r") as f:
+                lines = f.readlines()
+                for line in lines:
+                    line = line.strip("\n") + "," + name + "\n"
+                    with open(feture_path, "a") as e:
+                        e.write(line)
+
+        data = np.loadtxt(feture_path, delimiter=",", converters={128: person_id}, dtype=float)
+        x, y = np.split(data, (128,), axis=1)
+        x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=42, train_size=0.6)
+        classifier = svm.SVC(C=0.8, gamma=20, kernel='rbf', probability=True, decision_function_shape='ovr')
+        classifier.fit(x_train, y_train)
+        joblib.dump(classifier, "classifier.dat")
+
+        conn.sendall(pickle.dumps("train_done"))
+
+    @staticmethod
     def socket_transmission(task):
         """
         - front end
@@ -373,6 +425,8 @@ class Utility(object):
                     global SWITCH
                     SWITCH = False
                     obj.close()
+                elif ret_str == "train_done":
+                    print "have finished training..."
             elif type(ret_bytes) == type(dict()):
                 # feedback
                 for key, value in ret_bytes.items():
@@ -453,7 +507,7 @@ class Utility(object):
             for p in root.findall('info'):
                 _name = p.get('name')
                 _id = p.get('_id')
-                param_dict[_name] = int(_id)
+                params_dict[_name] = int(_id)
         elif "sys.xml" in xml_path.split("/"): # system parameters
             for param in root.iter("param"):
                 _name = param.attrib['name']
