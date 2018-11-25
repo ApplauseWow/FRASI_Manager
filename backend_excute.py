@@ -6,6 +6,16 @@ from Util import *
 
 class Backend(SocketServer.BaseRequestHandler):
 
+    def __init__(self, request, client_address, server):
+        self.request = request
+        self.client_address = client_address
+        self.server = server
+        self.setup()
+        try:
+            self.handle()
+        finally:
+            self.finish()
+
     def handle(self):
 
         conn = self.request
@@ -31,8 +41,11 @@ class Backend(SocketServer.BaseRequestHandler):
                 img_path = os.path.join(os.getcwd(), "Cache", "detect")
                 threading.Thread(target=Utility.detect_face, args=(img_path, conn)).start()
             elif ret_str == "exit":
-                pass
-                # no effect
+                print 'exit'
+                conn.sendall(pickle.dumps("exiting"))
+                self.server.shutdown()
+                self.request.close()
+                break
             else:
                 # receive data
                 # type(pickle.dumps(dict() or list())) = 'str'

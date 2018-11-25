@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>969</width>
-    <height>721</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>FRASI Manager</string>
@@ -20,583 +26,13 @@
    <string notr="true">background-color: rgb(255, 255, 255);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTreeWidget" name="menu">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>130</y>
-      <width>221</width>
-      <height>561</height>
-     </rect>
-    </property>
-    <property name="autoFillBackground">
-     <bool>true</bool>
-    </property>
-    <property name="styleSheet">
-     <string notr="true"/>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::NoFrame</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Plain</enum>
-    </property>
-    <property name="lineWidth">
-     <number>1</number>
-    </property>
-    <property name="autoScroll">
-     <bool>false</bool>
-    </property>
-    <property name="tabKeyNavigation">
-     <bool>false</bool>
-    </property>
-    <property name="showDropIndicator" stdset="0">
-     <bool>true</bool>
-    </property>
-    <property name="alternatingRowColors">
-     <bool>true</bool>
-    </property>
-    <property name="selectionMode">
-     <enum>QAbstractItemView::ExtendedSelection</enum>
-    </property>
-    <property name="textElideMode">
-     <enum>Qt::ElideRight</enum>
-    </property>
-    <property name="autoExpandDelay">
-     <number>1</number>
-    </property>
-    <property name="rootIsDecorated">
-     <bool>false</bool>
-    </property>
-    <property name="itemsExpandable">
-     <bool>true</bool>
-    </property>
-    <property name="animated">
-     <bool>true</bool>
-    </property>
-    <property name="allColumnsShowFocus">
-     <bool>true</bool>
-    </property>
-    <property name="headerHidden">
-     <bool>true</bool>
-    </property>
-    <attribute name="headerVisible">
-     <bool>false</bool>
-    </attribute>
-    <attribute name="headerStretchLastSection">
-     <bool>true</bool>
-    </attribute>
-    <column>
-     <property name="text">
-      <string>menu</string>
-     </property>
-    </column>
-    <item>
-     <property name="text">
-      <string>Face Recognition</string>
-     </property>
-     <property name="font">
-      <font>
-       <family>Waree</family>
-       <pointsize>14</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="background">
-      <brush brushstyle="SolidPattern">
-       <color alpha="255">
-        <red>6</red>
-        <green>6</green>
-        <blue>6</blue>
-       </color>
-      </brush>
-     </property>
-     <property name="foreground">
-      <brush brushstyle="NoBrush">
-       <color alpha="255">
-        <red>249</red>
-        <green>249</green>
-        <blue>249</blue>
-       </color>
-      </brush>
-     </property>
-     <item>
-      <property name="text">
-       <string>人脸检测</string>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <italic>true</italic>
-       </font>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>人脸识别</string>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <italic>true</italic>
-       </font>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>人脸考勤</string>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <italic>true</italic>
-       </font>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>人脸检索</string>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <italic>true</italic>
-       </font>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>单脸注册</string>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <italic>true</italic>
-       </font>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>多脸注册</string>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <italic>true</italic>
-       </font>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>身份证注册</string>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <italic>true</italic>
-       </font>
-      </property>
-     </item>
-    </item>
-    <item>
-     <property name="text">
-      <string>Speech Interaction</string>
-     </property>
-     <property name="font">
-      <font>
-       <family>Waree</family>
-       <pointsize>14</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="background">
-      <brush brushstyle="SolidPattern">
-       <color alpha="255">
-        <red>0</red>
-        <green>0</green>
-        <blue>0</blue>
-       </color>
-      </brush>
-     </property>
-     <property name="foreground">
-      <brush brushstyle="NoBrush">
-       <color alpha="255">
-        <red>245</red>
-        <green>245</green>
-        <blue>245</blue>
-       </color>
-      </brush>
-     </property>
-     <item>
-      <property name="text">
-       <string>语音识别</string>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <italic>true</italic>
-       </font>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>语音检索</string>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <italic>true</italic>
-       </font>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>语音考勤</string>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <italic>true</italic>
-       </font>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>语音注册</string>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <italic>true</italic>
-       </font>
-      </property>
-     </item>
-    </item>
-    <item>
-     <property name="text">
-      <string>Data Management</string>
-     </property>
-     <property name="font">
-      <font>
-       <family>Waree</family>
-       <pointsize>14</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="background">
-      <brush brushstyle="SolidPattern">
-       <color alpha="255">
-        <red>0</red>
-        <green>0</green>
-        <blue>0</blue>
-       </color>
-      </brush>
-     </property>
-     <property name="foreground">
-      <brush brushstyle="NoBrush">
-       <color alpha="255">
-        <red>248</red>
-        <green>248</green>
-        <blue>248</blue>
-       </color>
-      </brush>
-     </property>
-     <item>
-      <property name="text">
-       <string>数据导出</string>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <italic>true</italic>
-       </font>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>数据导入</string>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <italic>true</italic>
-       </font>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>统计查看</string>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <italic>true</italic>
-       </font>
-      </property>
-     </item>
-    </item>
-    <item>
-     <property name="text">
-      <string>System Option</string>
-     </property>
-     <property name="font">
-      <font>
-       <family>Waree</family>
-       <pointsize>14</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="background">
-      <brush brushstyle="SolidPattern">
-       <color alpha="255">
-        <red>0</red>
-        <green>0</green>
-        <blue>0</blue>
-       </color>
-      </brush>
-     </property>
-     <property name="foreground">
-      <brush brushstyle="NoBrush">
-       <color alpha="255">
-        <red>250</red>
-        <green>250</green>
-        <blue>250</blue>
-       </color>
-      </brush>
-     </property>
-     <item>
-      <property name="text">
-       <string>参数配置</string>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <italic>true</italic>
-       </font>
-      </property>
-     </item>
-    </item>
-   </widget>
-   <widget class="QLabel" name="frame">
-    <property name="geometry">
-     <rect>
-      <x>340</x>
-      <y>100</y>
-      <width>521</width>
-      <height>331</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: black;border-top-left-radius : 25px;border-bottom-right-radius :25px;</string>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::WinPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Sunken</enum>
-    </property>
-    <property name="lineWidth">
-     <number>5</number>
-    </property>
-    <property name="midLineWidth">
-     <number>3</number>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>60</y>
-      <width>221</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>FreeMono</family>
-      <pointsize>36</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(134, 134, 134);</string>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::WinPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <property name="lineWidth">
-     <number>10</number>
-    </property>
-    <property name="midLineWidth">
-     <number>10</number>
-    </property>
-    <property name="text">
-     <string>Menu</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="status">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>450</y>
-      <width>141</width>
-      <height>121</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>STIXVariants</family>
-      <pointsize>26</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true"/>
-    </property>
-    <property name="text">
-     <string>考勤中...</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="formLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>540</x>
-      <y>460</y>
-      <width>321</width>
-      <height>111</height>
-     </rect>
-    </property>
-    <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="font">
-        <font>
-         <pointsize>16</pointsize>
-         <italic>true</italic>
-        </font>
-       </property>
-       <property name="text">
-        <string>Name</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="font">
-        <font>
-         <pointsize>16</pointsize>
-         <italic>true</italic>
-        </font>
-       </property>
-       <property name="text">
-        <string>ID</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="font">
-        <font>
-         <pointsize>16</pointsize>
-         <italic>true</italic>
-        </font>
-       </property>
-       <property name="text">
-        <string>Date</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="name">
-       <property name="font">
-        <font>
-         <pointsize>16</pointsize>
-         <italic>true</italic>
-        </font>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::WinPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Sunken</enum>
-       </property>
-       <property name="text">
-        <string>郭高余</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="id_num">
-       <property name="font">
-        <font>
-         <pointsize>16</pointsize>
-         <italic>true</italic>
-        </font>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::WinPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Sunken</enum>
-       </property>
-       <property name="text">
-        <string>201610414206</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLabel" name="date">
-       <property name="font">
-        <font>
-         <pointsize>16</pointsize>
-         <italic>true</italic>
-        </font>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::WinPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Sunken</enum>
-       </property>
-       <property name="text">
-        <string>2018-10-05 20:20:30</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>660</x>
-      <y>600</y>
-      <width>291</width>
-      <height>71</height>
+      <x>510</x>
+      <y>530</y>
+      <width>272</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -610,6 +46,610 @@ background-color: rgb(134, 134, 134);</string>
      <string>FRASI Manager</string>
     </property>
    </widget>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>30</y>
+      <width>705</width>
+      <height>531</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,3">
+     <property name="verticalSpacing">
+      <number>15</number>
+     </property>
+     <item row="0" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>20</number>
+       </property>
+       <property name="rightMargin">
+        <number>3</number>
+       </property>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="font">
+            <font>
+             <family>FreeMono</family>
+             <pointsize>36</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(134, 134, 134);</string>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::WinPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <property name="lineWidth">
+            <number>10</number>
+           </property>
+           <property name="midLineWidth">
+            <number>10</number>
+           </property>
+           <property name="text">
+            <string>Menu</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTreeWidget" name="menu">
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Plain</enum>
+           </property>
+           <property name="lineWidth">
+            <number>1</number>
+           </property>
+           <property name="autoScroll">
+            <bool>false</bool>
+           </property>
+           <property name="tabKeyNavigation">
+            <bool>false</bool>
+           </property>
+           <property name="showDropIndicator" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="alternatingRowColors">
+            <bool>true</bool>
+           </property>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::ExtendedSelection</enum>
+           </property>
+           <property name="textElideMode">
+            <enum>Qt::ElideRight</enum>
+           </property>
+           <property name="autoExpandDelay">
+            <number>1</number>
+           </property>
+           <property name="rootIsDecorated">
+            <bool>false</bool>
+           </property>
+           <property name="itemsExpandable">
+            <bool>true</bool>
+           </property>
+           <property name="animated">
+            <bool>true</bool>
+           </property>
+           <property name="allColumnsShowFocus">
+            <bool>true</bool>
+           </property>
+           <property name="headerHidden">
+            <bool>true</bool>
+           </property>
+           <attribute name="headerVisible">
+            <bool>false</bool>
+           </attribute>
+           <attribute name="headerStretchLastSection">
+            <bool>true</bool>
+           </attribute>
+           <column>
+            <property name="text">
+             <string>menu</string>
+            </property>
+           </column>
+           <item>
+            <property name="text">
+             <string>Face Recognition</string>
+            </property>
+            <property name="font">
+             <font>
+              <family>Waree</family>
+              <pointsize>12</pointsize>
+              <weight>50</weight>
+              <italic>true</italic>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="background">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>6</red>
+               <green>6</green>
+               <blue>6</blue>
+              </color>
+             </brush>
+            </property>
+            <property name="foreground">
+             <brush brushstyle="NoBrush">
+              <color alpha="255">
+               <red>249</red>
+               <green>249</green>
+               <blue>249</blue>
+              </color>
+             </brush>
+            </property>
+            <item>
+             <property name="text">
+              <string>人脸检测</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <italic>true</italic>
+              </font>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>人脸识别</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <italic>true</italic>
+              </font>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>人脸考勤</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <italic>true</italic>
+              </font>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>人脸检索</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <italic>true</italic>
+              </font>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>单脸注册</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <italic>true</italic>
+              </font>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>多脸注册</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <italic>true</italic>
+              </font>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>身份证注册</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <italic>true</italic>
+              </font>
+             </property>
+            </item>
+           </item>
+           <item>
+            <property name="text">
+             <string>Speech Interaction</string>
+            </property>
+            <property name="font">
+             <font>
+              <family>Waree</family>
+              <pointsize>12</pointsize>
+              <weight>50</weight>
+              <italic>true</italic>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="background">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>0</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </property>
+            <property name="foreground">
+             <brush brushstyle="NoBrush">
+              <color alpha="255">
+               <red>245</red>
+               <green>245</green>
+               <blue>245</blue>
+              </color>
+             </brush>
+            </property>
+            <item>
+             <property name="text">
+              <string>语音识别</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <italic>true</italic>
+              </font>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>语音检索</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <italic>true</italic>
+              </font>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>语音考勤</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <italic>true</italic>
+              </font>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>语音注册</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <italic>true</italic>
+              </font>
+             </property>
+            </item>
+           </item>
+           <item>
+            <property name="text">
+             <string>Data Management</string>
+            </property>
+            <property name="font">
+             <font>
+              <family>Waree</family>
+              <pointsize>12</pointsize>
+              <weight>50</weight>
+              <italic>true</italic>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="background">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>0</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </property>
+            <property name="foreground">
+             <brush brushstyle="NoBrush">
+              <color alpha="255">
+               <red>248</red>
+               <green>248</green>
+               <blue>248</blue>
+              </color>
+             </brush>
+            </property>
+            <item>
+             <property name="text">
+              <string>数据导出</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <italic>true</italic>
+              </font>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>数据导入</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <italic>true</italic>
+              </font>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>统计查看</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <italic>true</italic>
+              </font>
+             </property>
+            </item>
+           </item>
+           <item>
+            <property name="text">
+             <string>System Option</string>
+            </property>
+            <property name="font">
+             <font>
+              <family>Waree</family>
+              <pointsize>12</pointsize>
+              <weight>50</weight>
+              <italic>true</italic>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="background">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>0</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </property>
+            <property name="foreground">
+             <brush brushstyle="NoBrush">
+              <color alpha="255">
+               <red>250</red>
+               <green>250</green>
+               <blue>250</blue>
+              </color>
+             </brush>
+            </property>
+            <item>
+             <property name="text">
+              <string>参数配置</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <italic>true</italic>
+              </font>
+             </property>
+            </item>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item row="0" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0">
+       <property name="leftMargin">
+        <number>10</number>
+       </property>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3" stretch="5,3">
+         <item>
+          <widget class="QLabel" name="frame">
+           <property name="styleSheet">
+            <string notr="true">background-color: black;border-top-left-radius : 25px;border-bottom-right-radius :25px;</string>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::WinPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Sunken</enum>
+           </property>
+           <property name="lineWidth">
+            <number>5</number>
+           </property>
+           <property name="midLineWidth">
+            <number>3</number>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="margin">
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,4">
+           <property name="topMargin">
+            <number>50</number>
+           </property>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <item>
+              <widget class="QLabel" name="status">
+               <property name="font">
+                <font>
+                 <family>STIXVariants</family>
+                 <pointsize>26</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <property name="text">
+                <string>考勤中...</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignHCenter|Qt::AlignTop</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QFormLayout" name="formLayout">
+             <property name="rightMargin">
+              <number>10</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_2">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                 <italic>true</italic>
+                </font>
+               </property>
+               <property name="text">
+                <string>Name</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="name">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                 <italic>true</italic>
+                </font>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::WinPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="text">
+                <string>郭高余</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_3">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                 <italic>true</italic>
+                </font>
+               </property>
+               <property name="text">
+                <string>ID</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLabel" name="id_num">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                 <italic>true</italic>
+                </font>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::WinPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="text">
+                <string>201610414206</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_4">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                 <italic>true</italic>
+                </font>
+               </property>
+               <property name="text">
+                <string>Date</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="date">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                 <italic>true</italic>
+                </font>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::WinPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="text">
+                <string>2018-10-05 20:20:30</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+   <zorder>gridLayoutWidget</zorder>
+   <zorder>label_8</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

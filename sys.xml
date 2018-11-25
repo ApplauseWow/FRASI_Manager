@@ -1,6 +1,6 @@
 <parameters>
     
-    <param count="1" name="recognition_frame" />
+    <param count="3" name="recognition_frame" />
     
     <param count="6" name="register_frame" />
     

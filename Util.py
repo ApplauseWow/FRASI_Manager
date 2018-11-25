@@ -384,7 +384,7 @@ class Utility(object):
         data = np.loadtxt(feture_path, delimiter=",", converters={128: person_id}, dtype=float)
         x, y = np.split(data, (128,), axis=1)
         x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=42, train_size=0.6)
-        classifier = svm.SVC(C=0.8, gamma=20, kernel='rbf', probability=True, decision_function_shape='ovr')
+        classifier = svm.SVC(C=0.8, gamma=20, kernel='rbf', decision_function_shape='ovr')
         classifier.fit(x_train, y_train)
         joblib.dump(classifier, cls_path)
 
@@ -428,6 +428,8 @@ class Utility(object):
                     obj.close()
                 elif ret_str == "train_done":
                     print "have finished training..."
+                elif ret_str == "exiting":
+                    print "backend is stopping..."
             elif type(ret_bytes) == type(dict()):
                 # feedback
                 for key, value in ret_bytes.items():
@@ -447,6 +449,7 @@ class Utility(object):
                         pass
         else:
             print "there is something wrong with backend...\nfail to connect"
+        obj.close()
 
     @staticmethod
     def sql_operation(op):

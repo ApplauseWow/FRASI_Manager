@@ -26,6 +26,7 @@ class Interaction(Index):
         self.compare_ui = Compare()
         self.compare_ui.id_exist_signal.connect(self.register_ui.show_cache)
         self.re_signal = True
+        self.showFullScreen()
 
     # def closeEvent(self, QCloseEvent):
     #     """
@@ -147,6 +148,18 @@ class Interaction(Index):
                     self.status.setText(u"重新操作")
                     self.re_signal = True
                     break
+
+    def keyPressEvent(self, QKeyEvent):
+        """
+        click the keyboard to do something...
+        :param QKeyEvent:
+        :return:
+        """
+
+        if QKeyEvent.key() == QtCore.Qt.Key_Escape: # clicked the ESC
+            Utility.socket_transmission("exit")
+            self.setDisabled(True)
+            self.close()
 
 
 class System(Sys_Option_UI):
