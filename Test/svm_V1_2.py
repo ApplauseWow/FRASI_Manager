@@ -10,13 +10,13 @@ from sklearn.externals import joblib
 # 不应该有unknown?这里unknown 有两个人的特征   导致guogoayu识别不出来？
 def person_id(n):
     n = bytes.decode(n)
-    id = {"guogaoyu": 201610414206, "trump": 201610414225}
+    id = {"guogaoyu": 201610414206, "unknown": -1}
     return id[n]
 
-#
-# for i in range(1, 4):
+
+# for i in range(1, 21):
 #     # ret, frame = cv2.VideoCapture(0).read()
-#     face = cv2.imread("./tt"+str(i)+".jpg")
+#     face = cv2.imread("./"+str(i)+".jpg")
 #     # face = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
 #     location = face_recognition.face_locations(face, model="cnn")
 #     encoding = face_recognition.face_encodings(face, location)
@@ -24,7 +24,7 @@ def person_id(n):
 #     with open(i.__str__()+'.txt', "r") as f:
 #         lines = f.readlines()
 #         for line in lines:
-#             line = line.strip("\n") + ",trump\n"
+#             line = line.strip("\n") + ",unknown\n"
 #             with open("data.dat", "a") as e:
 #                 e.write(line)
 

@@ -300,14 +300,18 @@ class Utility(object):
         for key, value in sorted_list:
             # print key, type(key)
             # send the recognition result
-            info_dict = dict()
-            sql = "select name from user_inf where userid=%s"
-            op = ["select", sql, [str(key)]]
-            info = Utility.sql_operation(op)
-            info['id'] = str(key)
-            info['date'] = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
-            result = {"rec_result": info}
-            conn.sendall(pickle.dumps(result))
+            if key == -1: # unknown
+                result = {"rec_result": None}
+                conn.sendall(pickle.dumps(result))
+            else:
+                info_dict = dict()
+                sql = "select name from user_inf where userid=%s"
+                op = ["select", sql, [str(key)]]
+                info = Utility.sql_operation(op)
+                info['id'] = str(key)
+                info['date'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+                result = {"rec_result": info}
+                conn.sendall(pickle.dumps(result))
             break
         else:
             result = {"rec_result": None}
