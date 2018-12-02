@@ -32,11 +32,11 @@ def person_id(n):
 path = u"./data.dat"
 data = numpy.loadtxt(path, delimiter=",", converters={128: person_id}, dtype=float)
 x, y = numpy.split(data, (128, ), axis=1)
-x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=42, train_size=0.6)
-classifier = svm.SVC(C = 0.8, gamma=20, kernel='rbf', probability=True, decision_function_shape='ovr')
+x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=42, train_size=0.75)
+classifier = svm.SVC(C = 0.8, gamma=0.1, kernel='rbf', decision_function_shape='ovr')
 classifier.fit(x_train, y_train)
 joblib.dump(classifier, "classifier.dat")
-print(classifier.score(x_train, y_train))
+# print(classifier.score(x_train, y_train))
 
 #
 # # ufunc 返回的是object类型 但是ufunc是在哪一步计算的？ debug中所有数据都是float64
